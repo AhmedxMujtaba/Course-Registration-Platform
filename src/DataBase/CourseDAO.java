@@ -45,6 +45,28 @@ public class CourseDAO {
         return course;
     }
 
+    public Course getCourseByName(String name) {
+        String query = "SELECT * FROM Courses WHERE name = '" + name + "'";
+        dbLink.connect();
+        ResultSet rs = dbLink.executeQuery(query);
+        Course course = null;
+        try {
+            if (rs.next()) {
+                course = new Course(
+                        rs.getInt("id"),
+                        rs.getString("name"),
+                        rs.getString("description"),
+                        rs.getInt("instructorId"),
+                        rs.getDouble("price")
+                );
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        dbLink.disconnect();
+        return course;
+    }
+
     public ArrayList<Integer> getRegisteredStudentsForCourse(int courseId) {
         ArrayList<Integer> registeredStudents = new ArrayList<>();
         String query = "SELECT studentId FROM StudentCourses WHERE courseId = " + courseId;
@@ -61,6 +83,7 @@ public class CourseDAO {
         dbLink.disconnect();
         return registeredStudents;
     }
+
     public void registerStudentForCourse(int courseId, int studentId) {
         String query = "INSERT INTO StudentCourses (courseId, studentId) VALUES (" + courseId + ", " + studentId + ")";
         dbLink.connect();
@@ -75,7 +98,3 @@ public class CourseDAO {
         dbLink.disconnect();
     }
 }
-
-
-
-

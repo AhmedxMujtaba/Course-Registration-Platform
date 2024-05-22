@@ -1,21 +1,100 @@
+//import DataBase.CourseDAO;
+//import DataBase.DataBaseLink;
+//import DataBase.StudentDAO;
+//import Entities.Course;
+//import Entities.Student;
+//import UI.LoginUI;
+//import UI.StartingUI;
+//
+//import javax.swing.*;
+//
+//public class Main {
+//    public static void main(String[] args) {
+//
+//        // Display login UI
+//        SwingUtilities.invokeLater(() -> {
+//            StartingUI loginUI = new StartingUI();
+//            loginUI.setVisible(true);
+//        });
+//
+//    }
+//}
 import DataBase.CourseDAO;
 import DataBase.DataBaseLink;
-import DataBase.StudentDAO;
-import Entities.Course;
-import Entities.Student;
-import UI.LoginUI;
-import UI.StartingUI;
+import DataBase.LectureDAO;
+import DataBase.UserDAO;
+import Entities.*;
 
-import javax.swing.*;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Main {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws SQLException {
+        // Create a database connection
+        DataBaseLink dbLink = new DataBaseLink();
 
-        // Display login UI
-        SwingUtilities.invokeLater(() -> {
-            StartingUI loginUI = new StartingUI();
-            loginUI.setVisible(true);
-        });
+        // Initialize DAOs
+        CourseDAO courseDAO = new CourseDAO(dbLink);
+        LectureDAO lectureDAO = new LectureDAO(dbLink);
+        UserDAO userDAO = new UserDAO(dbLink);
+        User niga = new User("Ahmed Ali","123","abc@",0121212);
+        userDAO.addInstructor(niga);
+        int nigaID = userDAO.getUserIdByEmail(niga.getEmail());
 
+        // Add a new course
+        Course course = new Course("Minecraft Course", "I teach to play MC",nigaID,1000);
+        courseDAO.addCourse(course);
+
+        // Retrieve the course by name
+        Course retrievedCourse = courseDAO.getCourseByName("Minecraft Course");
+        if (retrievedCourse != null) {
+            // Get the course ID
+            int courseId = retrievedCourse.getId();
+
+            // Add a new lecture for the course
+            Lecture lecture = new Lecture(courseId, "Introduction to Over World");
+            int lectureId = lectureDAO.addLecture(lecture);
+
+            // Add notes to the lecture
+            lectureDAO.addNoteToLecture(lectureId, "Craft Item","Crafting is all about how to make the items and shit you know");
+            lectureDAO.addNoteToLecture(lectureId, "Mob 101","All About Mobs");
+
+            // Add a video to the lecture
+            lectureDAO.addVideoToLecture(lectureId, "https://www.youtube.com/java_video", "Crafting tutorial", "Learn to kill mobs and be a hero!");
+
+            // Retrieve lectures by course ID
+            List<Lecture> lectures = lectureDAO.getLecturesByCourseId(courseId);
+            for (Lecture l : lectures)
+            {
+                System.out.println("Lecture ID: " + l.getId());
+                System.out.println("Lecture Title: " + l.getTitle());
+                System.out.println("Course ID: " + l.getCourseId());
+
+                // Get notes for the lecture
+                List<Notes> notes = lectureDAO.getNotesByLectureId(l.getId());
+                System.out.println("Notes:");
+                for (Notes note : notes) {
+                    System.out.println("- " + note.getTitle() + ": " + note.getNotes());
+                }
+
+// Get videos for the lecture
+                List<Video> videos = lectureDAO.getVideosByLectureId(l.getId());
+                System.out.println("Videos:");
+                for (Video video : videos) {
+                    System.out.println("- " + video.getTitle() + ": " + video.getLink());
+                }
+
+
+                System.out.println();
+            }
+        } else {
+            System.out.println("Course not found.");
+        }
     }
 }
+
+
+
+
+

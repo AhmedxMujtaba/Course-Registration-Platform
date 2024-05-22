@@ -17,6 +17,13 @@ public class User {
         this.email = email;
         this.phoneNumber = phoneNumber;
     }
+    public User(String name, String password, String email, int phoneNumber) {
+        //id is null since no id is made if a new User is made until entered in DB
+        this.name = name;
+        this.password = password;
+        this.email = email;
+        this.phoneNumber = phoneNumber;
+    }
 
     // Getter methods
     public String getName() {
