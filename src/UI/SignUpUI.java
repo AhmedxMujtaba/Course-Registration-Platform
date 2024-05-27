@@ -9,6 +9,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.border.LineBorder;
+import java.util.regex.Pattern;
 
 public class SignUpUI extends JFrame {
     private JTextField nameField;
@@ -17,6 +18,7 @@ public class SignUpUI extends JFrame {
     private JTextField phoneNumberField;
     private JComboBox<String> userTypeComboBox;
     private JButton signUpButton;
+    private JButton backButton;
     private JLabel nameLabel;
     private JLabel emailLabel;
     private JLabel passwordLabel;
@@ -29,17 +31,20 @@ public class SignUpUI extends JFrame {
     public SignUpUI() {
         setTitle("Course Registration Platform");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(700, 500); // Set the frame size to 700 by 500
-        setLocationRelativeTo(null); // Center the frame on the screen
-
-        // Set the background color of the frame to white
+        setSize(700, 500);
+        setLocationRelativeTo(null);
         getContentPane().setBackground(Color.WHITE);
 
-        // Set layout manager
-        setLayout(new GridBagLayout());
+        // Set the entire frame background color to white
+        setBackground(Color.WHITE);
+
+        // Use BorderLayout for overall layout
+        setLayout(new BorderLayout());
+
+        JPanel formPanel = new JPanel(new GridBagLayout());
+        formPanel.setBackground(Color.WHITE); // Set background color to white
         GridBagConstraints gbc = new GridBagConstraints();
 
-        // Create components
         titleLabel = new JLabel("Sign Up");
         nameLabel = new JLabel("Name:");
         nameField = new JTextField(20);
@@ -54,11 +59,11 @@ public class SignUpUI extends JFrame {
         signUpButton = new JButton("Sign Up");
         messageLabel = new JLabel("");
         showPasswordCheckBox = new JCheckBox("Show Password");
+        backButton = new JButton("Back");
 
-        // Set custom font for title, labels, buttons, and text fields
         Font customFont = new Font("04b03", Font.PLAIN, 24);
 
-        titleLabel.setFont(customFont.deriveFont(30f)); // Larger font for the title
+        titleLabel.setFont(customFont.deriveFont(30f));
         titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
 
         nameLabel.setFont(customFont);
@@ -67,151 +72,212 @@ public class SignUpUI extends JFrame {
         phoneNumberLabel.setFont(customFont);
         userTypeLabel.setFont(customFont);
         signUpButton.setFont(customFont);
-        messageLabel.setFont(customFont);
-        showPasswordCheckBox.setFont(customFont.deriveFont(18f)); // Font size 18 for the check box
-        nameField.setFont(customFont.deriveFont(18f)); // Font size 18 for the text fields
+        messageLabel.setFont(customFont.deriveFont(14f));
+        showPasswordCheckBox.setFont(customFont.deriveFont(18f));
+        backButton.setFont(customFont.deriveFont(18f));
+        nameField.setFont(customFont.deriveFont(18f));
         emailField.setFont(customFont.deriveFont(18f));
         passwordField.setFont(customFont.deriveFont(18f));
         phoneNumberField.setFont(customFont.deriveFont(18f));
         userTypeComboBox.setFont(customFont.deriveFont(18f));
 
-        // Set button border and background for high contrast
-        signUpButton.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2)); // Black border with 2 pixels thickness
-        signUpButton.setBackground(Color.WHITE); // White background
-        signUpButton.setOpaque(true); // Make sure the background color is applied
+        signUpButton.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2));
+        signUpButton.setBackground(Color.WHITE);
+        signUpButton.setOpaque(true);
 
-        // Remove the focus (selection) grid from the button
+        backButton.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2));
+        backButton.setBackground(Color.WHITE);
+        backButton.setOpaque(true);
+
         signUpButton.setFocusPainted(false);
+        backButton.setFocusPainted(false);
 
-        // Style the combo box with a white background and black border
         userTypeComboBox.setBackground(Color.WHITE);
         userTypeComboBox.setBorder(new LineBorder(Color.BLACK, 2));
 
-        // Style the check box with a black border
         showPasswordCheckBox.setBorder(new LineBorder(Color.BLACK, 2));
         showPasswordCheckBox.setBackground(Color.WHITE);
 
-        // Add title label with reduced top padding
         gbc.gridx = 0;
         gbc.gridy = 0;
-        gbc.insets = new Insets(20, 0, 20, 0); // Top padding reduced to 20 pixels
+        gbc.insets = new Insets(20, 0, 20, 0);
         gbc.gridwidth = 2;
         gbc.anchor = GridBagConstraints.CENTER;
-        add(titleLabel, gbc);
+        formPanel.add(titleLabel, gbc);
 
-        // Add name label and field
         gbc.gridy = 1;
-        gbc.insets = new Insets(5, 0, 5, 10); // Padding between components
+        gbc.insets = new Insets(5, 0, 5, 10);
         gbc.gridwidth = 1;
-        gbc.anchor = GridBagConstraints.EAST; // Align labels to the right
-        add(nameLabel, gbc);
+        gbc.anchor = GridBagConstraints.EAST;
+        formPanel.add(nameLabel, gbc);
 
         gbc.gridx = 1;
-        gbc.anchor = GridBagConstraints.WEST; // Align text fields to the left
-        add(nameField, gbc);
+        gbc.anchor = GridBagConstraints.WEST;
+        formPanel.add(nameField, gbc);
 
-        // Add email label and field
         gbc.gridx = 0;
         gbc.gridy = 2;
         gbc.anchor = GridBagConstraints.EAST;
-        add(emailLabel, gbc);
+        formPanel.add(emailLabel, gbc);
 
         gbc.gridx = 1;
         gbc.anchor = GridBagConstraints.WEST;
-        add(emailField, gbc);
+        formPanel.add(emailField, gbc);
 
-        // Add password label and field
         gbc.gridx = 0;
         gbc.gridy = 3;
         gbc.anchor = GridBagConstraints.EAST;
-        add(passwordLabel, gbc);
+        formPanel.add(passwordLabel, gbc);
 
         gbc.gridx = 1;
         gbc.anchor = GridBagConstraints.WEST;
-        add(passwordField, gbc);
+        formPanel.add(passwordField, gbc);
 
-        // Add show password checkbox
         gbc.gridy = 4;
-        add(showPasswordCheckBox, gbc);
+        formPanel.add(showPasswordCheckBox, gbc);
 
-        // Add phone number label and field
         gbc.gridx = 0;
         gbc.gridy = 5;
         gbc.anchor = GridBagConstraints.EAST;
-        add(phoneNumberLabel, gbc);
+        formPanel.add(phoneNumberLabel, gbc);
 
         gbc.gridx = 1;
         gbc.anchor = GridBagConstraints.WEST;
-        add(phoneNumberField, gbc);
+        formPanel.add(phoneNumberField, gbc);
 
-        // Add user type label and combo box
         gbc.gridx = 0;
         gbc.gridy = 6;
         gbc.anchor = GridBagConstraints.EAST;
-        add(userTypeLabel, gbc);
+        formPanel.add(userTypeLabel, gbc);
 
         gbc.gridx = 1;
         gbc.anchor = GridBagConstraints.WEST;
-        add(userTypeComboBox, gbc);
+        formPanel.add(userTypeComboBox, gbc);
 
-        // Add sign up button
         gbc.gridx = 0;
         gbc.gridy = 7;
-        gbc.gridwidth = 2;
-        gbc.anchor = GridBagConstraints.CENTER; // Center the sign up button
-        gbc.insets = new Insets(20, 0, 10, 0); // Padding around the button
-        signUpButton.setPreferredSize(new Dimension(150, 40)); // Set button size
-        add(signUpButton, gbc);
+        gbc.gridwidth = 1;
+        gbc.anchor = GridBagConstraints.CENTER;
+        gbc.insets = new Insets(20, 0, 10, 0);
+        signUpButton.setPreferredSize(new Dimension(150, 40));
+        formPanel.add(signUpButton, gbc);
 
-        // Add message label
-        gbc.gridy = 8;
-        gbc.insets = new Insets(10, 0, 0, 0); // Padding above the message label
-        add(messageLabel, gbc);
+        gbc.gridx = 1;
+        gbc.gridy = 7;
+        gbc.anchor = GridBagConstraints.SOUTHEAST;
+        gbc.insets = new Insets(10, 10, 10, 10);
+        backButton.setPreferredSize(new Dimension(100, 40));
+        formPanel.add(backButton, gbc);
 
-        // Add action listener to show password checkbox
+        JPanel messagePanel = new JPanel();
+        messagePanel.setBackground(Color.WHITE); // Set background color to white
+        messagePanel.add(messageLabel);
+        add(messagePanel, BorderLayout.SOUTH);
+
+        add(formPanel, BorderLayout.CENTER);
+
         showPasswordCheckBox.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (showPasswordCheckBox.isSelected()) {
-                    passwordField.setEchoChar((char) 0); // Show the password
+                    passwordField.setEchoChar((char) 0);
                 } else {
-                    passwordField.setEchoChar('*'); // Hide the password
+                    passwordField.setEchoChar('*');
                 }
             }
         });
 
-        // Add action listener to sign up button
         signUpButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String name = nameField.getText();
-                String email = emailField.getText();
-                String password = new String(passwordField.getPassword());
-                int phoneNumber = Integer.parseInt(phoneNumberField.getText());
-                String userType = (String) userTypeComboBox.getSelectedItem();
+                try {
+                    String name = nameField.getText();
+                    String email = emailField.getText();
+                    String password = new String(passwordField.getPassword());
+                    String phoneNumberStr = phoneNumberField.getText();
 
-                // Create a new user
-                User newUser = new User(0, name, password, email, phoneNumber);
+                    if (name.isEmpty() || email.isEmpty() || password.isEmpty() || phoneNumberStr.isEmpty()) {
+                        displayErrorMessage("All fields must be filled out.");
+                        return;
+                    }
 
-                // Add user to the database with the selected user type
-                DataBaseLink dbLink = new DataBaseLink();
-                UserDAO userDAO = new UserDAO(dbLink);
-                if (userType.equals("Student")) {
-                    userDAO.addStudent(newUser);
-                } else if (userType.equals("Instructor")) {
-                    userDAO.addInstructor(newUser);
+                    if (!isValidEmail(email)) {
+                        displayErrorMessage("Invalid email format.");
+                        return;
+                    }
+
+                    if (password.length() < 8) {
+                        displayErrorMessage("Password must be at least 8 characters long.");
+                        return;
+                    }
+
+                    int phoneNumber;
+                    try {
+                        phoneNumber = Integer.parseInt(phoneNumberStr);
+                    } catch (NumberFormatException ex) {
+                        displayErrorMessage("Invalid phone number. Please enter a valid number.");
+                        return;
+                    }
+
+                    String userType = (String) userTypeComboBox.getSelectedItem();
+
+                    User newUser = new User(0, name, password, email, phoneNumber);
+                    DataBaseLink dbLink = new DataBaseLink();
+                    UserDAO userDAO = new UserDAO(dbLink);
+
+                    if (userDAO.emailExists(email)) {
+                        displayErrorMessage("Email already exists. Please use a different email.");
+                        return;
+                    }
+
+                    boolean success;
+                    if (userType.equals("Student")) {
+                        success = userDAO.addStudent(newUser);
+                    } else {
+                        success = userDAO.addInstructor(newUser);
+                    }
+
+                    if (success) {
+                        displaySuccessMessage("User signed up successfully as " + userType + "!");
+                    } else {
+                        displayErrorMessage("There was an error signing up. Please try again.");
+                    }
+                } catch (Exception ex) {
+                    displayErrorMessage("An unexpected error occurred. Please try again.");
                 }
-
-                messageLabel.setText("User signed up successfully as " + userType + "!");
             }
         });
 
-        setVisible(true); // Make the sign up UI visible
+        backButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                dispose();
+                new StartingUI().setVisible(true);
+            }
+        });
+
+        setVisible(true);
+    }
+
+    private void displayErrorMessage(String message) {
+        messageLabel.setText(message);
+        messageLabel.setForeground(Color.RED);
+        messageLabel.setFont(messageLabel.getFont().deriveFont(14f));
+    }
+
+    private void displaySuccessMessage(String message) {
+        messageLabel.setText(message);
+        messageLabel.setForeground(Color.BLACK);
+        messageLabel.setFont(messageLabel.getFont().deriveFont(18f));
+    }
+
+    private boolean isValidEmail(String email) {
+        String emailRegex = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$";
+        Pattern pat = Pattern.compile(emailRegex);
+        return pat.matcher(email).matches();
     }
 
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            new SignUpUI().setVisible(true);
-        });
+        SwingUtilities.invokeLater(() -> new SignUpUI().setVisible(true));
     }
 }

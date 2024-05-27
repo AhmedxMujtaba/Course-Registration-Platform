@@ -1,120 +1,115 @@
 package UI;
 
-import DataBase.CourseDAO;
-import DataBase.DataBaseLink;
-import Entities.Course;
 import Entities.Instructor;
+import Entities.Course;
+import DataBase.InstructorDAO;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 
 public class InstructorPortalUI extends JFrame {
-    private JTextField courseNameField;
-    private JTextField courseDescriptionField;
-    private JTextField coursePriceField;
+    private JLabel welcomeLabel;
+    private JLabel userNameLabel;
+    private JLabel coursesLabel;
+    private JLabel incomeLabel;
+    private JButton accountSettingsButton;
     private JButton createCourseButton;
-    private JLabel messageLabel;
+    private JButton searchCoursesButton;
+    private JButton logoutButton;
+    private JPanel coursesPanel;
+    private JScrollPane scrollPane;
 
     private Instructor instructor;
+    private InstructorDAO instructorDAO;
 
     public InstructorPortalUI(Instructor instructor) {
         this.instructor = instructor;
+        this.instructorDAO = new InstructorDAO();
 
-        setTitle("Instructor Portal");
-        setSize(500, 400);
+        setTitle("Course Registration Platform");
+        setSize(800, 600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLocationRelativeTo(null);
+        setLayout(new BorderLayout());
 
-        // Use GridBagLayout with spacing
-        JPanel panel = new JPanel(new GridBagLayout());
-        GridBagConstraints c = new GridBagConstraints();
-        c.insets = new Insets(10, 10, 5, 10); // Adjust spacing as needed
+        JPanel topPanel = new JPanel();
+        topPanel.setLayout(new GridLayout(1, 4));
 
-        // Add components with constraints
-        JLabel titleLabel = new JLabel("Create a New Course");
-        titleLabel.setFont(new Font("Arial", Font.BOLD, 18));
-        c.gridx = 0;
-        c.gridy = 0;
-        c.gridwidth = 2; // Span two columns
-        panel.add(titleLabel, c);
-
-        JLabel courseNameLabel = new JLabel("Course Name:");
-        courseNameLabel.setFont(new Font("Arial", Font.PLAIN, 14));
-        c.gridy = 1;
-        c.gridwidth = 1; // Back to single column
-        panel.add(courseNameLabel, c);
-
-        courseNameField = new JTextField();
-        courseNameField.setPreferredSize(new Dimension(300, 25));
-        c.gridx = 1;
-        panel.add(courseNameField, c);
-
-        JLabel courseDescriptionLabel = new JLabel("Course Description:");
-        courseDescriptionLabel.setFont(new Font("Arial", Font.PLAIN, 14));
-        c.gridy = 2;
-        panel.add(courseDescriptionLabel, c);
-
-        courseDescriptionField = new JTextField();
-        courseDescriptionField.setPreferredSize(new Dimension(300, 25));
-        c.gridx = 1;
-        panel.add(courseDescriptionField, c);
-
-        JLabel coursePriceLabel = new JLabel("Course Price:");
-        coursePriceLabel.setFont(new Font("Arial", Font.PLAIN, 14));
-        c.gridy = 3;
-        panel.add(coursePriceLabel, c);
-
-        coursePriceField = new JTextField();
-        coursePriceField.setPreferredSize(new Dimension(300, 25));
-        c.gridx = 1;
-        panel.add(coursePriceField, c);
-
+        accountSettingsButton = new JButton("Account Settings");
         createCourseButton = new JButton("Create Course");
-        createCourseButton.setFont(new Font("Arial", Font.BOLD, 14));
-        // Consider using custom button appearance (refer to Java Swing documentation)
-        c.gridy = 4;
-        c.gridwidth = 2; // Span two columns for button
-        panel.add(createCourseButton, c);
+        searchCoursesButton = new JButton("Search Courses");
+        logoutButton = new JButton("Log out");
 
-        messageLabel = new JLabel("");
-        messageLabel.setFont(new Font("Arial", Font.PLAIN, 14));
-        messageLabel.setForeground(Color.RED);  // Error message color
-        c.gridy = 5;
-        c.gridwidth = 1;
-        panel.add(messageLabel, c);
+        topPanel.add(accountSettingsButton);
+        topPanel.add(createCourseButton);
+        topPanel.add(searchCoursesButton);
+        topPanel.add(logoutButton);
 
-        add(panel);  // Add panel to the frame
+        add(topPanel, BorderLayout.NORTH);
+
+        JPanel centerPanel = new JPanel();
+        centerPanel.setLayout(new GridLayout(4, 1));
+
+        welcomeLabel = new JLabel("Welcome " + instructor.getName() + "!", SwingConstants.CENTER);
+        userNameLabel = new JLabel("User Name: " + instructor.getName(), SwingConstants.CENTER);
+        coursesLabel = new JLabel("Courses: " + instructor.getCourseIds().size(), SwingConstants.CENTER);
+        incomeLabel = new JLabel("Income: " + instructor.getIncome(), SwingConstants.CENTER);
+
+        centerPanel.add(welcomeLabel);
+        centerPanel.add(userNameLabel);
+        centerPanel.add(coursesLabel);
+        centerPanel.add(incomeLabel);
+
+        add(centerPanel, BorderLayout.CENTER);
+
+        coursesPanel = new JPanel();
+        coursesPanel.setLayout(new BoxLayout(coursesPanel, BoxLayout.Y_AXIS));
+        coursesPanel.setBorder(BorderFactory.createTitledBorder("Courses"));
+
+        scrollPane = new JScrollPane(coursesPanel);
+        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+
+        add(scrollPane, BorderLayout.EAST);
 
         createCourseButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                createCourse();
+                // For demonstration, add a new course with a unique name
+                addCourse("Course " + (instructor.getCourseIds().size() + 1));
             }
         });
 
-        setVisible(true);
+        updateCourses();
     }
 
-    private void createCourse() {
-        String name = courseNameField.getText();
-        String description = courseDescriptionField.getText();
+    private void addCourse(String courseName) {
+        instructor.addCourseID(courseName);
+        updateCourses();
+    }
 
-        // Validate input (optional)
-        if (name.isEmpty() || description.isEmpty()) {
-            messageLabel.setText("Please fill in all fields.");
-            return;
-        }
-        double price;
-        try {
-            price = Double.parseDouble(coursePriceField.getText());
-            if (price <= 0) {
-                messageLabel.setText("Price must be positive.");
-                return;
+    private void updateCourses() {
+        coursesPanel.removeAll();
+        for (String courseId : instructor.getCourseIds()) {
+            Course course = instructorDAO.getCourseById(courseId);
+            if (course != null) {
+                JButton courseButton = new JButton(course.getName());
+                coursesPanel.add(courseButton);
             }
-        } catch (NumberFormatException e) {
-            messageLabel.setText("Invalid price.");
         }
+        coursesLabel.setText("Courses: " + instructor.getCourseIds().size());
+        incomeLabel.setText("Income: " + instructor.getIncome());
+        coursesPanel.revalidate();
+        coursesPanel.repaint();
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> {
+            InstructorDAO instructorDAO = new InstructorDAO();
+            Instructor instructor = instructorDAO.getInstructorById(12); // Fetch instructor with ID 1 from database
+            InstructorPortalUI instructorPage = new InstructorPortalUI(instructor);
+            instructorPage.setVisible(true);
+        });
     }
 }

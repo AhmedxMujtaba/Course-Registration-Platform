@@ -20,25 +20,75 @@ public class UserDAO {
                 + user.getPassword() + "', '"
                 + user.getEmail() + "', "
                 + user.getPhoneNumber() + ")";
-        return dbLink.executeUpdateAndGetGeneratedKeys(query);
+        try {
+            return dbLink.executeUpdateAndGetGeneratedKeys(query);
+        } catch (Exception e) {
+            e.printStackTrace(); // Print stack trace for debugging
+            return -1; // Return -1 to indicate failure
+        }
     }
 
-    public void addStudent(User user) {
-        int userId = addUser(user);
-        user.setId(userId);
-        String studentQuery = "INSERT INTO Students (userId) VALUES (" + userId + ")";
-        dbLink.connect();
-        dbLink.executeUpdate(studentQuery);
-        dbLink.disconnect();
+    public boolean addStudent(User user) {
+        if (emailExists(user.getEmail())) {
+            System.out.println("Email already exists.");
+            return false; // Email already exists
+        }
+
+        try {
+            int userId = addUser(user);
+            if (userId == -1) {
+                return false; // Adding user failed
+            }
+            user.setId(userId);
+            String studentQuery = "INSERT INTO Students (userId) VALUES (" + userId + ")";
+            dbLink.connect();
+            dbLink.executeUpdate(studentQuery);
+            dbLink.disconnect();
+            return true; // Successfully added student
+        } catch (Exception e) {
+            e.printStackTrace(); // Print stack trace for debugging
+            return false; // Indicate failure
+        }
     }
 
-    public void addInstructor(User user) {
-        int userId = addUser(user);
-        user.setId(userId);
-        String instructorQuery = "INSERT INTO Instructors (userId, income) VALUES (" + userId + ", 0)";
-        dbLink.connect();
-        dbLink.executeUpdate(instructorQuery);
-        dbLink.disconnect();
+
+    public boolean addInstructor(User user) {
+        if (emailExists(user.getEmail())) {
+            System.out.println("Email already exists.");
+            return false; // Email already exists
+        }
+
+        try {
+            int userId = addUser(user);
+            if (userId == -1) {
+                return false; // Adding user failed
+            }
+            user.setId(userId);
+            String instructorQuery = "INSERT INTO Instructors (userId, income) VALUES (" + userId + ", 0)";
+            dbLink.connect();
+            dbLink.executeUpdate(instructorQuery);
+            dbLink.disconnect();
+            return true; // Successfully added instructor
+        } catch (Exception e) {
+            e.printStackTrace(); // Print stack trace for debugging
+            return false; // Indicate failure
+        }
+    }
+
+    public boolean emailExists(String email) {
+        String query = "SELECT COUNT(*) FROM Users WHERE email = '" + email + "'";
+        try {
+            dbLink.connect();
+            ResultSet rs = dbLink.executeQuery(query);
+            rs.next();
+            int count = rs.getInt(1);
+            dbLink.disconnect();
+            return count > 0; // If count is greater than 0, email exists
+        } catch (Exception e) {
+            e.printStackTrace();
+            dbLink.disconnect();
+            return false; // In case of an error, treat it as email existing to avoid duplicates
+        }
     }
 
     public User getUserByEmail(String email) {
