@@ -1,9 +1,9 @@
 package DataBase;
 
+import Entities.Course;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import Entities.Course;
 
 public class CourseDAO {
     private DataBaseLink dbLink;
@@ -12,16 +12,26 @@ public class CourseDAO {
         this.dbLink = dbLink;
     }
 
-    public void addCourse(Course course) {
+    public boolean addCourse(Course course) {
         String query = "INSERT INTO Courses (name, description, instructorId, price) VALUES ('"
                 + course.getName() + "', '"
                 + course.getDescription() + "', "
                 + course.getInstructorId() + ", "
                 + course.getPrice() + ")";
+
+        boolean isSuccess = false;
         dbLink.connect();
-        dbLink.executeUpdate(query);
-        dbLink.disconnect();
+
+        try {
+            int rowsAffected = dbLink.executeUpdate(query);
+            isSuccess = rowsAffected > 0;
+        } finally {
+            dbLink.disconnect();
+        }
+
+        return isSuccess;
     }
+
 
     public Course getCourseById(int id) {
         String query = "SELECT * FROM Courses WHERE id = " + id;

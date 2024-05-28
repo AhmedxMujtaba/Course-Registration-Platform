@@ -131,6 +131,8 @@ public class SignUpUI extends JFrame {
 
         gbc.gridx = 1;
         gbc.anchor = GridBagConstraints.WEST;
+        //make password field hidden at first
+        passwordField.setEchoChar('*');
         formPanel.add(passwordField, gbc);
 
         gbc.gridy = 4;

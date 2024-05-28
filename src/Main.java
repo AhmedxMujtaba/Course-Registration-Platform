@@ -43,7 +43,7 @@ public class Main {
         int nigaID = userDAO.getUserIdByEmail(niga.getEmail());
 
         // Add a new course
-        Course course = new Course("Minecraft Course", "I teach to play MC",nigaID,1000);
+        Course course = new Course("Balls", "I teach to play with balls",nigaID,1023200);
         courseDAO.addCourse(course);
 
         // Retrieve the course by name

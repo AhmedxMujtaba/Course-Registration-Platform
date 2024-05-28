@@ -1,0 +1,61 @@
+
+CREATE TABLE Users (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    email VARCHAR(255) NOT NULL,
+    phoneNumber INT
+);
+
+CREATE TABLE Students (
+    userId INT PRIMARY KEY,
+    FOREIGN KEY (userId) REFERENCES Users(id)
+);
+
+CREATE TABLE Instructors (
+    userId INT PRIMARY KEY,
+    income DOUBLE DEFAULT 0,
+    FOREIGN KEY (userId) REFERENCES Users(id)
+);
+
+CREATE TABLE Courses (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    description TEXT,
+    instructorId INT,
+    price DOUBLE,
+    FOREIGN KEY (instructorId) REFERENCES Instructors(userId)
+);
+
+CREATE TABLE StudentCourses (
+    studentId INT,
+    courseId INT,
+    PRIMARY KEY (studentId, courseId),
+    FOREIGN KEY (studentId) REFERENCES Students(userId),
+    FOREIGN KEY (courseId) REFERENCES Courses(id)
+);
+
+CREATE TABLE Lectures (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    courseId INT,
+    title VARCHAR(255) NOT NULL,
+    FOREIGN KEY (courseId) REFERENCES Courses(id)
+);
+
+CREATE TABLE Notes (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    title VARCHAR(255) NOT NULL,
+    notes TEXT,
+    lecture_id INT,
+    FOREIGN KEY (lecture_id) REFERENCES Lectures(id)
+);
+
+CREATE TABLE Video (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    link VARCHAR(255) NOT NULL,
+    title VARCHAR(255) NOT NULL,
+    description TEXT,
+    lecture_id INT,
+    FOREIGN KEY (lecture_id) REFERENCES Lectures(id)
+);
+
