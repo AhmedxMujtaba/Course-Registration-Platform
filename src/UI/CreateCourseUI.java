@@ -2,6 +2,8 @@ package UI;
 
 import DataBase.CourseDAO;
 import DataBase.DataBaseLink;
+import DataBase.InstructorDAO;
+import DataBase.UserDAO;
 import Entities.Course;
 import Entities.Instructor;
 
@@ -157,7 +159,11 @@ public class CreateCourseUI extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 dispose();
-                new InstructorPortalUI(instructor).setVisible(true);
+                //now we need modified instrictor so,
+                InstructorDAO instructorDAO = new InstructorDAO();
+
+                Instructor updatedInstructor = instructorDAO.getInstructorById(instructor.getId());
+                new InstructorPortalUI(updatedInstructor).setVisible(true);
             }
         });
 
@@ -172,10 +178,5 @@ public class CreateCourseUI extends JFrame {
     private void displaySuccessMessage(String message) {
         messageLabel.setText(message);
         messageLabel.setForeground(Color.BLACK);
-    }
-
-    public static void main(String[] args) {
-        // For testing
-        // SwingUtilities.invokeLater(() -> new CreateCourseUI(new Instructor(1, "John Doe")).setVisible(true));
     }
 }

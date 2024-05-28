@@ -4,6 +4,7 @@ import Entities.User;
 import Entities.Instructor;
 import Entities.Student;
 
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
@@ -138,7 +139,7 @@ public class UserDAO {
     }
 
 
-    private boolean isInstructor(int userId) {
+    public boolean isInstructor(int userId) {
         String query = "SELECT * FROM Instructors WHERE userId = " + userId;
         dbLink.connect();
         ResultSet rs = dbLink.executeQuery(query);
@@ -152,7 +153,7 @@ public class UserDAO {
         return isInstructor;
     }
 
-    private boolean isStudent(int userId) {
+    public boolean isStudent(int userId) {
         String query = "SELECT * FROM Students WHERE userId = " + userId;
         dbLink.connect();
         ResultSet rs = dbLink.executeQuery(query);
@@ -181,4 +182,67 @@ public class UserDAO {
         dbLink.disconnect();
         return userId;
     }
+    public boolean updateUserName(User user) {
+        String query = "UPDATE Users SET name = ? WHERE id = ?";
+        try {
+            dbLink.connect();
+            PreparedStatement pstmt = dbLink.getConnection().prepareStatement(query);
+            pstmt.setString(1, user.getName());
+            pstmt.setInt(2, user.getId());
+            int rowsAffected = pstmt.executeUpdate();
+            dbLink.disconnect();
+            return rowsAffected > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public boolean updateUserPassword(User user) {
+        String query = "UPDATE Users SET password = ? WHERE id = ?";
+        try {
+            dbLink.connect();
+            PreparedStatement pstmt = dbLink.getConnection().prepareStatement(query);
+            pstmt.setString(1, user.getPassword());
+            pstmt.setInt(2, user.getId());
+            int rowsAffected = pstmt.executeUpdate();
+            dbLink.disconnect();
+            return rowsAffected > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public boolean deleteUser(User user) {
+        String query = "DELETE FROM Users WHERE id = ?";
+        try {
+            dbLink.connect();
+            PreparedStatement pstmt = dbLink.getConnection().prepareStatement(query);
+            pstmt.setInt(1, user.getId());
+            int rowsAffected = pstmt.executeUpdate();
+            dbLink.disconnect();
+            return rowsAffected > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+    public boolean updateUserPhoneNumber(User user) {
+        String query = "UPDATE Users SET phoneNumber = ? WHERE id = ?";
+        try {
+            dbLink.connect();
+            PreparedStatement pstmt = dbLink.getConnection().prepareStatement(query);
+            pstmt.setInt(1, user.getPhoneNumber());
+            pstmt.setInt(2, user.getId());
+            int rowsAffected = pstmt.executeUpdate();
+            dbLink.disconnect();
+            return rowsAffected > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+
 }

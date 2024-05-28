@@ -20,7 +20,7 @@ public class Course {
         this.registeredStudentIDs = new ArrayList<>();
     }
     public Course(String name, String description, int instructorId, double price) {
-        this.id = id;
+
         this.name = name;
         this.description = description;
         this.instructorId = instructorId;

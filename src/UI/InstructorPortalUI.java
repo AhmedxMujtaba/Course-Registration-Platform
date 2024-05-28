@@ -227,7 +227,7 @@ public class InstructorPortalUI extends JFrame {
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
             InstructorDAO instructorDAO = new InstructorDAO();
-            Instructor instructor = instructorDAO.getInstructorById(5); // Fetch instructor with ID 12 from database
+            Instructor instructor = instructorDAO.getInstructorById(1); // Fetch instructor with ID 12 from database
             InstructorPortalUI instructorPage = new InstructorPortalUI(instructor);
             instructorPage.setVisible(true);
         });
