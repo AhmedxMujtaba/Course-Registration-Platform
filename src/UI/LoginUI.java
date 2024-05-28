@@ -10,13 +10,12 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
-import java.io.IOException;
 
 public class LoginUI extends JFrame {
     private JTextField emailField;
     private JPasswordField passwordField;
     private JButton loginButton;
+    private JButton backButton; // New back button
     private JLabel emailLabel;
     private JLabel passwordLabel;
     private JLabel messageLabel;
@@ -42,6 +41,7 @@ public class LoginUI extends JFrame {
         passwordLabel = new JLabel("Password:");
         passwordField = new JPasswordField(20);
         loginButton = new JButton("Login");
+        backButton = new JButton("Back"); // Create the back button
         messageLabel = new JLabel("");
 
         // Set custom font for title, labels, buttons, and text fields
@@ -53,6 +53,7 @@ public class LoginUI extends JFrame {
         emailLabel.setFont(customFont);
         passwordLabel.setFont(customFont);
         loginButton.setFont(customFont);
+        backButton.setFont(customFont); // Set font for the back button
         messageLabel.setFont(customFont);
         emailField.setFont(customFont.deriveFont(20f)); // Font size 20 for the text fields
         passwordField.setFont(customFont.deriveFont(20f)); // Font size 20 for the text fields
@@ -68,15 +69,23 @@ public class LoginUI extends JFrame {
         // Remove the focus (selection) grid from the button
         loginButton.setFocusPainted(false);
 
+        // Set button border and background for the back button
+        backButton.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2)); // Black border with 2 pixels thickness
+        backButton.setBackground(Color.WHITE); // White background
+        backButton.setOpaque(true); // Make sure the background color is applied
+
+        // Remove the focus (selection) grid from the back button
+        backButton.setFocusPainted(false);
+
         // Add title label with reduced top padding
         gbc.gridx = 0;
         gbc.gridy = 0;
-        gbc.insets = new Insets(10, 0, 10, 0); // Top padding reduced to 10 pixels
+        gbc.insets = new Insets(10, 0, 20, 0); // Top padding reduced to 10 pixels
         gbc.gridwidth = 2;
         add(titleLabel, gbc);
 
         // Add email label and field
-        gbc.insets = new Insets(0, 0, 10, 0); // Padding between components
+        gbc.insets = new Insets(0, 0, 0, 10);
         gbc.gridy = 1;
         gbc.gridwidth = 1;
         gbc.anchor = GridBagConstraints.EAST; // Align labels to the right
@@ -89,6 +98,7 @@ public class LoginUI extends JFrame {
         // Add password label and field
         gbc.gridx = 0;
         gbc.gridy = 2;
+        gbc.insets = new Insets(10, 0, 0, 10);
         gbc.anchor = GridBagConstraints.EAST; // Align labels to the right
         add(passwordLabel, gbc);
 
@@ -101,13 +111,22 @@ public class LoginUI extends JFrame {
         gbc.gridy = 3;
         gbc.gridwidth = 2;
         gbc.anchor = GridBagConstraints.CENTER; // Center the login button
+        gbc.insets = new Insets(40, 0, 0, 0);
         loginButton.setPreferredSize(new Dimension(200, 50)); // Set button size
         add(loginButton, gbc);
 
         // Add message label
         gbc.gridy = 4;
-        gbc.insets = new Insets(10, 0, 0, 0); // Padding above the message label
+        gbc.insets = new Insets(20, 0, 0, 0); // Padding above the message label
         add(messageLabel, gbc);
+
+        // Add back button in the bottom right corner
+        gbc.gridy = 5;
+        gbc.gridx = 1;
+        gbc.anchor = GridBagConstraints.SOUTHEAST; // Align the button to the right
+        gbc.insets = new Insets(10, 10, 10, 10); // Add padding to place the button in the bottom right
+        backButton.setPreferredSize(new Dimension(100, 40)); // Set button size
+        add(backButton, gbc);
 
         // Add action listener to login button
         loginButton.addActionListener(new ActionListener() {
@@ -118,6 +137,7 @@ public class LoginUI extends JFrame {
 
                 // Perform login check
                 DataBaseLink dbLink = new DataBaseLink();
+                dbLink.connect();
                 UserDAO userDAO = new UserDAO(dbLink);
                 User user = userDAO.getUserByEmail(email);
 
@@ -135,6 +155,16 @@ public class LoginUI extends JFrame {
                 } else {
                     messageLabel.setText("Invalid email or password.");
                 }
+                dbLink.disconnect();
+            }
+        });
+
+        // Add action listener to back button
+        backButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                dispose(); // Close the login window
+                new StartingUI().setVisible(true); // Open the starting UI
             }
         });
 

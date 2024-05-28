@@ -65,15 +65,6 @@ public class StartingUI extends JFrame {
 
         // Add label "Course Registration Platform" with reduced top padding
         JLabel titleLabel = new JLabel("Course Registration Platform");
-//        try {
-//            // Load the custom font from a file
-//            Font customFont = Font.createFont(Font.TRUETYPE_FONT, new File("Pixel Digivolve.otf")).deriveFont(24f);
-//
-//        } catch (FontFormatException | IOException e) {
-//            e.printStackTrace();
-//            // Fallback to a default font if there's an error
-//            titleLabel.setFont(new Font("Arial", Font.BOLD, 24));
-//        }
         Font pixelFont = new Font("04b03",Font.PLAIN,30);
         titleLabel.setFont(pixelFont);
         titleLabel.setHorizontalAlignment(SwingConstants.CENTER);

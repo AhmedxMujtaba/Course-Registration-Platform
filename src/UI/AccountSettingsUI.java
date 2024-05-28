@@ -1,6 +1,8 @@
 package UI;
 
 import DataBase.DataBaseLink;
+import DataBase.InstructorDAO;
+import DataBase.StudentDAO;
 import DataBase.UserDAO;
 import Entities.User;
 
@@ -8,28 +10,30 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import javax.swing.border.LineBorder;
 import java.util.regex.Pattern;
 
-public class SignUpUI extends JFrame {
+public class AccountSettingsUI extends JFrame {
     private JTextField nameField;
     private JTextField emailField;
     private JPasswordField passwordField;
     private JTextField phoneNumberField;
-    private JComboBox<String> userTypeComboBox;
-    private JButton signUpButton;
+    private JButton saveButton;
+    private JButton deleteButton;
     private JButton backButton;
     private JLabel nameLabel;
     private JLabel emailLabel;
     private JLabel passwordLabel;
     private JLabel phoneNumberLabel;
-    private JLabel userTypeLabel;
     private JLabel messageLabel;
     private JLabel titleLabel;
     private JCheckBox showPasswordCheckBox;
+    private User user;
+    private DataBaseLink dbLink;
 
-    public SignUpUI() {
-        setTitle("Course Registration Platform");
+    public AccountSettingsUI(User user) {
+        this.user = user;
+        this.dbLink = new DataBaseLink();
+        setTitle("Account Settings");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(700, 500);
         setLocationRelativeTo(null);
@@ -45,7 +49,7 @@ public class SignUpUI extends JFrame {
         formPanel.setBackground(Color.WHITE); // Set background color to white
         GridBagConstraints gbc = new GridBagConstraints();
 
-        titleLabel = new JLabel("Sign Up");
+        titleLabel = new JLabel("Account Settings");
         nameLabel = new JLabel("Name:");
         nameField = new JTextField(20);
         emailLabel = new JLabel("Email:");
@@ -54,15 +58,15 @@ public class SignUpUI extends JFrame {
         passwordField = new JPasswordField(20);
         phoneNumberLabel = new JLabel("Phone Number:");
         phoneNumberField = new JTextField(20);
-        userTypeLabel = new JLabel("User Type:");
-        userTypeComboBox = new JComboBox<>(new String[]{"Student", "Instructor"});
-        signUpButton = new JButton("Sign Up");
+        saveButton = new JButton("Save");
+        deleteButton = new JButton("Delete Account");
+        backButton = new JButton("Back");
         messageLabel = new JLabel("");
         showPasswordCheckBox = new JCheckBox("Show Password");
-        backButton = new JButton("Back");
 
         Font customFont = new Font("04b03", Font.PLAIN, 24);
 
+        // Font settings
         titleLabel.setFont(customFont.deriveFont(30f));
         titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
 
@@ -70,32 +74,33 @@ public class SignUpUI extends JFrame {
         emailLabel.setFont(customFont);
         passwordLabel.setFont(customFont);
         phoneNumberLabel.setFont(customFont);
-        userTypeLabel.setFont(customFont);
-        signUpButton.setFont(customFont);
+        saveButton.setFont(customFont);
+        deleteButton.setFont(customFont);
+        backButton.setFont(customFont);
         messageLabel.setFont(customFont.deriveFont(14f));
         showPasswordCheckBox.setFont(customFont.deriveFont(18f));
-        backButton.setFont(customFont.deriveFont(18f));
         nameField.setFont(customFont.deriveFont(18f));
         emailField.setFont(customFont.deriveFont(18f));
         passwordField.setFont(customFont.deriveFont(18f));
         phoneNumberField.setFont(customFont.deriveFont(18f));
-        userTypeComboBox.setFont(customFont.deriveFont(18f));
 
-        signUpButton.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2));
-        signUpButton.setBackground(Color.WHITE);
-        signUpButton.setOpaque(true);
+        // Button settings
+        saveButton.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2));
+        saveButton.setBackground(Color.WHITE);
+        saveButton.setOpaque(true);
+
+        deleteButton.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2));
+        deleteButton.setBackground(Color.WHITE);
+        deleteButton.setOpaque(true);
 
         backButton.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2));
         backButton.setBackground(Color.WHITE);
         backButton.setOpaque(true);
 
-        signUpButton.setFocusPainted(false);
+        saveButton.setFocusPainted(false);
+        deleteButton.setFocusPainted(false);
         backButton.setFocusPainted(false);
 
-        userTypeComboBox.setBackground(Color.WHITE);
-        userTypeComboBox.setBorder(new LineBorder(Color.BLACK, 2));
-
-        showPasswordCheckBox.setBorder(new LineBorder(Color.BLACK, 2));
         showPasswordCheckBox.setBackground(Color.WHITE);
 
         gbc.gridx = 0;
@@ -122,6 +127,7 @@ public class SignUpUI extends JFrame {
 
         gbc.gridx = 1;
         gbc.anchor = GridBagConstraints.WEST;
+        emailField.setEditable(false); // Make email field non-editable
         formPanel.add(emailField, gbc);
 
         gbc.gridx = 0;
@@ -131,8 +137,6 @@ public class SignUpUI extends JFrame {
 
         gbc.gridx = 1;
         gbc.anchor = GridBagConstraints.WEST;
-        //make password field hidden at first
-        passwordField.setEchoChar('*');
         formPanel.add(passwordField, gbc);
 
         gbc.gridy = 4;
@@ -149,20 +153,18 @@ public class SignUpUI extends JFrame {
 
         gbc.gridx = 0;
         gbc.gridy = 6;
-        gbc.anchor = GridBagConstraints.EAST;
-        formPanel.add(userTypeLabel, gbc);
-
-        gbc.gridx = 1;
-        gbc.anchor = GridBagConstraints.WEST;
-        formPanel.add(userTypeComboBox, gbc);
-
-        gbc.gridx = 0;
-        gbc.gridy = 7;
         gbc.gridwidth = 1;
         gbc.anchor = GridBagConstraints.CENTER;
         gbc.insets = new Insets(20, 0, 10, 0);
-        signUpButton.setPreferredSize(new Dimension(150, 40));
-        formPanel.add(signUpButton, gbc);
+        saveButton.setPreferredSize(new Dimension(150, 40));
+        formPanel.add(saveButton, gbc);
+
+        gbc.gridx = 1;
+        gbc.gridy = 6;
+        gbc.anchor = GridBagConstraints.SOUTHEAST;
+        gbc.insets = new Insets(10, 10, 10, 10);
+        deleteButton.setPreferredSize(new Dimension(200, 40));
+        formPanel.add(deleteButton, gbc);
 
         gbc.gridx = 1;
         gbc.gridy = 7;
@@ -178,6 +180,7 @@ public class SignUpUI extends JFrame {
 
         add(formPanel, BorderLayout.CENTER);
 
+
         showPasswordCheckBox.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -189,63 +192,69 @@ public class SignUpUI extends JFrame {
             }
         });
 
-        signUpButton.addActionListener(new ActionListener() {
+        saveButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                try {
-                    String name = nameField.getText();
-                    String email = emailField.getText();
-                    String password = new String(passwordField.getPassword());
-                    String phoneNumberStr = phoneNumberField.getText();
+                // Get the updated user information from the UI fields
+                String newName = nameField.getText().trim();
+                String newPassword = new String(passwordField.getPassword());
+                String newPhoneNumber = phoneNumberField.getText().trim();
 
-                    if (name.isEmpty() || email.isEmpty() || password.isEmpty() || phoneNumberStr.isEmpty()) {
-                        displayErrorMessage("All fields must be filled out.");
-                        return;
-                    }
+                // Perform validation checks
+                if (newName.isEmpty()) {
+                    displayErrorMessage("Username cannot be empty.");
+                    return;
+                }
 
-                    if (!isValidEmail(email)) {
-                        displayErrorMessage("Invalid email format.");
-                        return;
-                    }
+                if (newPassword.length() < 8) {
+                    displayErrorMessage("Password must be at least 8 characters long.");
+                    return;
+                }
 
-                    if (password.length() < 8) {
-                        displayErrorMessage("Password must be at least 8 characters long.");
-                        return;
-                    }
+                // Validate phone number format
+                if (!isValidPhoneNumber(newPhoneNumber)) {
+                    displayErrorMessage("Invalid phone number format.");
+                    return;
+                }
 
-                    int phoneNumber;
-                    try {
-                        phoneNumber = Integer.parseInt(phoneNumberStr);
-                    } catch (NumberFormatException ex) {
-                        displayErrorMessage("Invalid phone number. Please enter a valid number.");
-                        return;
-                    }
+                // Update the user object with the new information
+                user.setName(newName);
+                user.setPassword(newPassword);
+                user.setPhoneNumber(Integer.parseInt(newPhoneNumber));
 
-                    String userType = (String) userTypeComboBox.getSelectedItem();
+                // Update the user information in the database
+                UserDAO userDAO = new UserDAO(dbLink);
+                boolean updated = userDAO.updateUserName(user) && userDAO.updateUserPassword(user) && userDAO.updateUserPhoneNumber(user);
 
-                    User newUser = new User(0, name, password, email, phoneNumber);
-                    DataBaseLink dbLink = new DataBaseLink();
+                // Display success or error message based on the update result
+                if (updated) {
+                    displaySuccessMessage("User information updated successfully.");
+                } else {
+                    displayErrorMessage("Failed to update user information.");
+                }
+            }
+        });
+
+        deleteButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Confirm with the user before deleting the account
+                int choice = JOptionPane.showConfirmDialog(AccountSettingsUI.this,
+                        "Are you sure you want to delete your account?",
+                        "Confirm Deletion", JOptionPane.YES_NO_OPTION);
+
+                if (choice == JOptionPane.YES_OPTION) {
+                    // Attempt to delete the user from the database
                     UserDAO userDAO = new UserDAO(dbLink);
+                    boolean deleted = userDAO.deleteUser(user);
 
-                    if (userDAO.emailExists(email)) {
-                        displayErrorMessage("Email already exists. Please use a different email.");
-                        return;
-                    }
-
-                    boolean success;
-                    if (userType.equals("Student")) {
-                        success = userDAO.addStudent(newUser);
+                    // Display success or error message based on the delete result
+                    if (deleted) {
+                        displaySuccessMessage("Account deleted successfully.");
+                        dispose(); // Close the account settings UI after deletion
                     } else {
-                        success = userDAO.addInstructor(newUser);
+                        displayErrorMessage("Failed to delete account.");
                     }
-
-                    if (success) {
-                        displaySuccessMessage("User signed up successfully as " + userType + "!");
-                    } else {
-                        displayErrorMessage("There was an error signing up. Please try again.");
-                    }
-                } catch (Exception ex) {
-                    displayErrorMessage("An unexpected error occurred. Please try again.");
                 }
             }
         });
@@ -253,10 +262,30 @@ public class SignUpUI extends JFrame {
         backButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                dispose();
-                new StartingUI().setVisible(true);
+
+                UserDAO us = new UserDAO(new DataBaseLink());
+                //todo fix this and keep consistency throughout code
+                InstructorDAO is = new InstructorDAO();
+                StudentDAO su = new StudentDAO(new DataBaseLink());
+                int currentUserId = user.getId();
+                //check to see if user is an instructor or student and open their respective portals
+                if (us.isInstructor(currentUserId)){
+                    dispose();
+                    InstructorPortalUI instructorPortalUI = new InstructorPortalUI(is.getInstructorById(currentUserId));
+                    instructorPortalUI.setVisible(true);
+                }
+                else if (us.isStudent(currentUserId)){
+                    dispose();
+                    //todo impliment for student portal UI
+                }
             }
         });
+
+        // Populate user data in the fields
+        nameField.setText(user.getName());
+        emailField.setText(user.getEmail());
+        passwordField.setText(user.getPassword());
+        phoneNumberField.setText(String.valueOf(user.getPhoneNumber()));
 
         setVisible(true);
     }
@@ -264,22 +293,15 @@ public class SignUpUI extends JFrame {
     private void displayErrorMessage(String message) {
         messageLabel.setText(message);
         messageLabel.setForeground(Color.RED);
-        messageLabel.setFont(messageLabel.getFont().deriveFont(14f));
     }
 
     private void displaySuccessMessage(String message) {
         messageLabel.setText(message);
         messageLabel.setForeground(Color.BLACK);
-        messageLabel.setFont(messageLabel.getFont().deriveFont(18f));
     }
-
-    private boolean isValidEmail(String email) {
-        String emailRegex = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$";
-        Pattern pat = Pattern.compile(emailRegex);
-        return pat.matcher(email).matches();
-    }
-
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> new SignUpUI().setVisible(true));
+    private boolean isValidPhoneNumber(String phoneNumber) {
+        String phoneRegex = "\\d+"; // Regular expression to match digits
+        return phoneNumber.matches(phoneRegex);
     }
 }
+

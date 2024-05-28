@@ -16,11 +16,13 @@ public class DataBaseLink {
     // Establishes a connection to the database
     public void connect() {
         try {
-            String url = "jdbc:mysql://localhost:3306/course_management";
-            String user = "root"; // Default user for XAMPP
-            String password = ""; // Default password for XAMPP (usually empty)
-            connection = DriverManager.getConnection(url, user, password);
-            System.out.println("Connected to the database.");
+            if (connection == null || connection.isClosed()) {
+                String url = "jdbc:mysql://localhost:3306/course_management";
+                String user = "root"; // Default user for XAMPP
+                String password = ""; // Default password for XAMPP
+                connection = DriverManager.getConnection(url, user, password);
+                System.out.println("Connected to the database.");
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -29,7 +31,7 @@ public class DataBaseLink {
     // Closes the connection to the database
     public void disconnect() {
         try {
-            if (connection != null) {
+            if (connection != null && !connection.isClosed()) {
                 connection.close();
                 System.out.println("Disconnected from the database.");
             }
@@ -41,23 +43,35 @@ public class DataBaseLink {
     // Executes a SELECT query and returns the result as a ResultSet
     public ResultSet executeQuery(String query) {
         ResultSet rs = null;
+        Statement stmt = null;
         try {
-            Statement stmt = connection.createStatement();
+            connect();
+            stmt = connection.createStatement();
             rs = stmt.executeQuery(query);
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        // Note: The caller must close the ResultSet and Statement
         return rs;
     }
 
     // Executes an INSERT, UPDATE, or DELETE query and returns the number of affected rows
     public int executeUpdate(String query) {
         int result = 0;
+        Statement stmt = null;
         try {
-            Statement stmt = connection.createStatement();
+            connect();
+            stmt = connection.createStatement();
             result = stmt.executeUpdate(query);
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            try {
+                if (stmt != null) stmt.close();
+                disconnect();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
         return result;
     }
@@ -66,19 +80,29 @@ public class DataBaseLink {
     public Connection getConnection() {
         return connection;
     }
+
     public int executeUpdateAndGetGeneratedKeys(String query) {
         int generatedKey = -1;
+        Statement stmt = null;
+        ResultSet rs = null;
         try {
             connect();
-            Statement stmt = connection.createStatement();
+            stmt = connection.createStatement();
             stmt.executeUpdate(query, Statement.RETURN_GENERATED_KEYS);
-            ResultSet rs = stmt.getGeneratedKeys();
+            rs = stmt.getGeneratedKeys();
             if (rs.next()) {
                 generatedKey = rs.getInt(1);
             }
-            disconnect();
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            try {
+                if (rs != null) rs.close();
+                if (stmt != null) stmt.close();
+                disconnect();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
         return generatedKey;
     }

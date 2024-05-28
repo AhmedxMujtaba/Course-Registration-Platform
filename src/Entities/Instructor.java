@@ -4,24 +4,24 @@ import java.util.ArrayList;
 
 public class Instructor extends User {
     // Attributes
-    private ArrayList<String> courses;
+    private ArrayList<String> courseIds;
     private double income;
 
     // Constructor
     public Instructor(int id, String name, String password, String email, int phoneNumber, double income) {
         super(id, name, password, email, phoneNumber);
-        this.courses = new ArrayList<>();
+        this.courseIds = new ArrayList<>();
         this.income = income;
     }
 
     // Add course IDs when a new course is made.
     public void addCourseID(String id) {
-        courses.add(id);
+        courseIds.add(id);
     }
 
     // Method to delete a course
-    public void deleteCourse(Course course) {
-        courses.remove(course);
+    public void deleteCourse(String id) {
+        courseIds.remove(id);
     }
 
     // Method to check the number of students enrolled in a course
@@ -36,35 +36,19 @@ public class Instructor extends User {
         return course.getPrice() * checkStudentsNo(course);
     }
 
-    public static class Video {
-        private String link;
-        private String title;
-        private String description;
+    public void setIncome(double income) {
+        this.income = income;
+    }
 
-        public Video(String link, String title, String description) {
-            this.link = link;
-            this.title = title;
-            this.description = description;
-        }
+    public double getIncome() {
+        return income;
+    }
 
-        public void setTitle(String title) {
-            this.title = title;
-        }
+    public ArrayList<String> getCourseIds() {
+        return courseIds;
+    }
 
-        public void setDescription(String description) {
-            this.description = description;
-        }
-
-        public String getLink() {
-            return link;
-        }
-
-        public String getTitle() {
-            return title;
-        }
-
-        public String getDescription() {
-            return description;
-        }
+    public void setCourseIds(ArrayList<String> courseIds) {
+        this.courseIds = courseIds;
     }
 }
