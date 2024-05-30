@@ -154,7 +154,8 @@ public class CoursePanelInstructorUI extends JFrame {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     // Open the selected lecture UI
-                    LectureUI lectureUI = new LectureUI(lecture);
+                    dispose();
+                    LectureInstructorUI lectureUI = new LectureInstructorUI(course,instructor,lecture);
                     lectureUI.setVisible(true);
                 }
             });

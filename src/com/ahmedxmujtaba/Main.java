@@ -93,7 +93,9 @@ public class Main {
         }
     }
 }
-
+//todo make UI for displaying lecture details
+// make UI to edit lecture details.
+// make UI to display student portal
 
 
 

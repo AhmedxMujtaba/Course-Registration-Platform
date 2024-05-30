@@ -25,27 +25,23 @@ public class LectureDAO {
     }
 
     public void saveLecture(Lecture lecture) {
+        dbLink.connect();
         Connection connection = dbLink.getConnection();
         try {
-            // Insert lecture
-            String insertLectureQuery = "INSERT INTO lectures (courseId, title) VALUES (?, ?)";
-            try (PreparedStatement lectureStmt = connection.prepareStatement(insertLectureQuery, Statement.RETURN_GENERATED_KEYS)) {
-                lectureStmt.setInt(1, lecture.getCourseId());
-                lectureStmt.setString(2, lecture.getTitle());
+            // Update lecture
+            String updateLectureQuery = "UPDATE lectures SET title = ? WHERE id = ?";
+            try (PreparedStatement lectureStmt = connection.prepareStatement(updateLectureQuery)) {
+                lectureStmt.setString(1, lecture.getTitle());
+                lectureStmt.setInt(2, lecture.getId());
                 lectureStmt.executeUpdate();
-
-                // Get generated lecture ID
-                try (ResultSet rs = lectureStmt.getGeneratedKeys()) {
-                    if (rs.next()) {
-                        int lectureId = rs.getInt(1);
-                        lecture.setId(lectureId);
-                    }
-                }
             }
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            dbLink.disconnect();
         }
     }
+
 
     public ArrayList<Lecture> getLecturesByCourseId(int courseId) throws SQLException {
         ArrayList<Lecture> lectures = new ArrayList<>();
@@ -235,4 +231,62 @@ public class LectureDAO {
             dbLink.disconnect();
         }
     }
+    public void saveNoteToLecture(Notes note) {
+        try {
+            // Open the database connection
+            dbLink.connect();
+            Connection connection = dbLink.getConnection();
+
+            // Prepare the update query
+            String query = "UPDATE notes SET title = ?, notes = ? WHERE id = ?";
+
+            try (PreparedStatement stmt = connection.prepareStatement(query)) {
+                // Set the parameters for the update query
+                stmt.setString(1, note.getTitle());
+                stmt.setString(2, note.getNotes());
+                stmt.setInt(3, note.getId());
+
+                // Execute the update query
+                stmt.executeUpdate();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            } finally {
+                // Close the database connection
+                dbLink.disconnect();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void saveVideoToLecture(Video video) {
+        try {
+            // Open the database connection
+            dbLink.connect();
+            Connection connection = dbLink.getConnection();
+
+            // Prepare the update query
+            String query = "UPDATE video SET link = ?, title = ?, description = ? WHERE id = ?";
+
+            try (PreparedStatement stmt = connection.prepareStatement(query)) {
+                // Set the parameters for the update query
+                stmt.setString(1, video.getLink());
+                stmt.setString(2, video.getTitle());
+                stmt.setString(3, video.getDescription());
+                stmt.setInt(4, video.getId());
+
+                // Execute the update query
+                stmt.executeUpdate();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            } finally {
+                // Close the database connection
+                dbLink.disconnect();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
 }

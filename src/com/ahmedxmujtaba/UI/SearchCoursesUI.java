@@ -138,7 +138,7 @@ public class SearchCoursesUI extends JFrame {
                 courseButton.addActionListener(new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
-                        new CourseDetailsUI(course, instructor).setVisible(true);
+                        new CourseDetailsUI(course, instructor.getId()).setVisible(true);
                         dispose();
                     }
                 });
@@ -165,3 +165,4 @@ public class SearchCoursesUI extends JFrame {
         });
     }
 }
+//todo modify class to accommodate both students and instructors..
