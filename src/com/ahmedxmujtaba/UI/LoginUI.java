@@ -20,11 +20,16 @@ public class LoginUI extends JFrame {
     private JLabel passwordLabel;
     private JLabel messageLabel;
     private JLabel titleLabel;
+    private JCheckBox showPasswordCheckBox; // Checkbox to show/hide password
 
     public LoginUI() {
+
+        ImageIcon icon = new ImageIcon("src/com/ahmedxmujtaba/UI/Icons/icon1.png");
+        setIconImage(icon.getImage());
+
         setTitle("Course Registration Platform");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(700, 500); // Set the frame size to 700 by 500
+        setSize(900, 600); // Set the frame size to 700 by 500
         setLocationRelativeTo(null); // Center the frame on the screen
 
         // Set the background color of the frame to white
@@ -40,6 +45,7 @@ public class LoginUI extends JFrame {
         emailField = new JTextField(20);
         passwordLabel = new JLabel("Password:");
         passwordField = new JPasswordField(20);
+        showPasswordCheckBox = new JCheckBox("Show Password"); // Create the checkbox
         loginButton = new JButton("Login");
         backButton = new JButton("Back"); // Create the back button
         messageLabel = new JLabel("");
@@ -47,11 +53,14 @@ public class LoginUI extends JFrame {
         // Set custom font for title, labels, buttons, and text fields
         Font customFont = new Font("04b03", Font.PLAIN, 30);
 
-        titleLabel.setFont(customFont.deriveFont(30f)); // Larger font for the title
+        titleLabel.setFont(customFont.deriveFont(30f));
         titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
 
         emailLabel.setFont(customFont);
         passwordLabel.setFont(customFont);
+        showPasswordCheckBox.setFont(customFont.deriveFont(20f));
+        showPasswordCheckBox.setFocusable(false);
+        showPasswordCheckBox.setBackground(Color.white);
         loginButton.setFont(customFont);
         backButton.setFont(customFont); // Set font for the back button
         messageLabel.setFont(customFont);
@@ -106,9 +115,16 @@ public class LoginUI extends JFrame {
         gbc.anchor = GridBagConstraints.WEST; // Align text fields to the left
         add(passwordField, gbc);
 
+        // Add the show password checkbox
+        gbc.gridx = 1;
+        gbc.gridy = 3;
+        gbc.anchor = GridBagConstraints.WEST; // Align checkbox to the left
+        gbc.insets = new Insets(10, 0, 0, 0); // Padding above the checkbox
+        add(showPasswordCheckBox, gbc);
+
         // Add login button
         gbc.gridx = 0;
-        gbc.gridy = 3;
+        gbc.gridy = 4;
         gbc.gridwidth = 2;
         gbc.anchor = GridBagConstraints.CENTER; // Center the login button
         gbc.insets = new Insets(40, 0, 0, 0);
@@ -116,12 +132,12 @@ public class LoginUI extends JFrame {
         add(loginButton, gbc);
 
         // Add message label
-        gbc.gridy = 4;
+        gbc.gridy = 5;
         gbc.insets = new Insets(20, 0, 0, 0); // Padding above the message label
         add(messageLabel, gbc);
 
         // Add back button in the bottom right corner
-        gbc.gridy = 5;
+        gbc.gridy = 6;
         gbc.gridx = 1;
         gbc.anchor = GridBagConstraints.SOUTHEAST; // Align the button to the right
         gbc.insets = new Insets(10, 10, 10, 10); // Add padding to place the button in the bottom right
@@ -165,6 +181,18 @@ public class LoginUI extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 dispose(); // Close the login window
                 new StartingUI().setVisible(true); // Open the starting UI
+            }
+        });
+
+        // Add action listener to show password checkbox
+        showPasswordCheckBox.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (showPasswordCheckBox.isSelected()) {
+                    passwordField.setEchoChar((char) 0); // Show password
+                } else {
+                    passwordField.setEchoChar('*'); // Hide password
+                }
             }
         });
 

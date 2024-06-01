@@ -4,17 +4,19 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
-import java.io.IOException;
 
 public class StartingUI extends JFrame {
     private JButton loginButton;
     private JButton signupButton;
 
     public StartingUI() {
+
+        ImageIcon icon = new ImageIcon("src/com/ahmedxmujtaba/UI/Icons/icon1.png");
+        setIconImage(icon.getImage());
+
         setTitle("Course Registration Platform");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(700, 500); // Set the frame size to 700 by 500
+        setSize(900, 600);
 
         // Set the background color of the frame to white
         getContentPane().setBackground(Color.WHITE);
@@ -23,6 +25,7 @@ public class StartingUI extends JFrame {
         JPanel panel = new JPanel(new BorderLayout());
         panel.setBackground(Color.WHITE); // Set the background color of the panel to white
         add(panel);
+
         // Create a panel to hold the buttons with GridBagLayout
         JPanel buttonPanel = new JPanel(new GridBagLayout());
         buttonPanel.setBackground(Color.WHITE); // Set the background color of the button panel to white
@@ -32,7 +35,7 @@ public class StartingUI extends JFrame {
         loginButton = new JButton("Login");
         signupButton = new JButton("Sign Up");
 
-        Font buttonPixelFont = new Font("04b03",Font.PLAIN,23);
+        Font buttonPixelFont = new Font("04b03", Font.PLAIN, 23);
         loginButton.setFont(buttonPixelFont);
         signupButton.setFont(buttonPixelFont);
 
@@ -52,25 +55,38 @@ public class StartingUI extends JFrame {
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(0, 0, 50, 0); // Set padding of 50 pixels between buttons
 
-        // Add login button
-        gbc.gridx = 0;
-        gbc.gridy = 1; // Move down to accommodate label padding
-        loginButton.setPreferredSize(new Dimension(100, 50)); // Set button size
-        buttonPanel.add(loginButton, gbc);
+        // Load and resize the image
+        ImageIcon imageIcon = new ImageIcon("src/com/ahmedxmujtaba/UI/Icons/icon1.png"); // Load the image
+        Image image = imageIcon.getImage(); // Get the image
+        Image scaledImage = image.getScaledInstance(100, 100, Image.SCALE_SMOOTH); // Scale the image
+        ImageIcon scaledIcon = new ImageIcon(scaledImage); // Create a new ImageIcon
 
-        // Add signup button
-        gbc.gridy = 2;
-        signupButton.setPreferredSize(new Dimension(100, 50)); // Set button size
-        buttonPanel.add(signupButton, gbc);
+        // Add the resized image above the label
+        JLabel imageLabel = new JLabel(scaledIcon);
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.insets = new Insets(20, 0, 20, 0); // Add some top padding
+        buttonPanel.add(imageLabel, gbc);
 
         // Add label "Course Registration Platform" with reduced top padding
         JLabel titleLabel = new JLabel("Course Registration Platform");
-        Font pixelFont = new Font("04b03",Font.PLAIN,30);
+        Font pixelFont = new Font("04b03", Font.PLAIN, 40);
         titleLabel.setFont(pixelFont);
         titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        gbc.insets = new Insets(20, 0, 50, 0); // Reduce top padding to 20 pixels
-        gbc.gridy = 0;
+        gbc.insets = new Insets(0, 0, 50, 0); // Reduce top padding to 0 pixels
+        gbc.gridy = 1;
         buttonPanel.add(titleLabel, gbc);
+
+        // Add login button
+        gbc.insets = new Insets(0, 0, 50, 0); // Reset padding for buttons
+        gbc.gridy = 2;
+        loginButton.setPreferredSize(new Dimension(150, 60)); // Set button size
+        buttonPanel.add(loginButton, gbc);
+
+        // Add signup button
+        gbc.gridy = 3;
+        signupButton.setPreferredSize(new Dimension(100, 50)); // Set button size
+        buttonPanel.add(signupButton, gbc);
 
         // Add action listeners to login and signup buttons
         loginButton.addActionListener(new ActionListener() {

@@ -29,9 +29,13 @@ public class SignUpUI extends JFrame {
     private JCheckBox showPasswordCheckBox;
 
     public SignUpUI() {
+
+        ImageIcon icon = new ImageIcon(("src/com/ahmedxmujtaba/UI/Icons/icon1.png"));
+        setIconImage(icon.getImage());
+
         setTitle("Course Registration Platform");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(700, 500);
+        setSize(900, 600);
         setLocationRelativeTo(null);
         getContentPane().setBackground(Color.WHITE);
 
@@ -71,10 +75,10 @@ public class SignUpUI extends JFrame {
         passwordLabel.setFont(customFont);
         phoneNumberLabel.setFont(customFont);
         userTypeLabel.setFont(customFont);
-        signUpButton.setFont(customFont);
+        signUpButton.setFont(customFont.deriveFont(30f));
         messageLabel.setFont(customFont.deriveFont(14f));
         showPasswordCheckBox.setFont(customFont.deriveFont(18f));
-        backButton.setFont(customFont.deriveFont(18f));
+        backButton.setFont(customFont.deriveFont(30f));
         nameField.setFont(customFont.deriveFont(18f));
         emailField.setFont(customFont.deriveFont(18f));
         passwordField.setFont(customFont.deriveFont(18f));

@@ -3,35 +3,35 @@ package com.ahmedxmujtaba.Entities;
 import java.util.ArrayList;
 
 public class Student extends User {
-    private ArrayList<Course> registeredCourses; // To store registered courses
+    private ArrayList<Integer> registeredCoursesIds;
 
     // Constructor
     public Student(int id,String name, String password, String email, int phoneNumber) {
         super(id, name, password, email, phoneNumber);
-        this.registeredCourses = new ArrayList<>();
+
     }
 
     // Getter and setter for registeredCourses
-    public ArrayList<Course> getRegisteredCourses() {
-        return registeredCourses;
+    public ArrayList<Integer> getRegisteredCourses() {
+        return registeredCoursesIds;
     }
 
-    public void setRegisteredCourses(ArrayList<Course> registeredCourses) {
-        this.registeredCourses = registeredCourses;
+    public void setRegisteredCourses(ArrayList<Integer> registeredCourses) {
+        this.registeredCoursesIds = registeredCourses;
     }
 
     // Method to register for a course
     public void registerCourse(Course course) {
-        registeredCourses.add(course);
+        registeredCoursesIds.add(course.getId());
     }
 
     // Method to unregister from a course
     public void unregisterCourse(Course course) {
-        registeredCourses.remove(course);
+        registeredCoursesIds.remove(course.getId());
     }
 
     // Method to get list of registered courses
-    public ArrayList<Course> getCourses() {
-        return registeredCourses;
+    public ArrayList<Integer> getCourses() {
+        return registeredCoursesIds;
     }
 }

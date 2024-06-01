@@ -1,6 +1,5 @@
 package com.ahmedxmujtaba.UI;
 
-import com.ahmedxmujtaba.DataBase.CourseDAO;
 import com.ahmedxmujtaba.DataBase.InstructorDAO;
 import com.ahmedxmujtaba.Entities.Course;
 import com.ahmedxmujtaba.Entities.Instructor;
@@ -30,7 +29,8 @@ public class InstructorPortalUI extends JFrame {
         this.instructorDAO = new InstructorDAO();
         //resetting instructor to make sure it contains the necessary ids of courses
         this.instructor = instructorDAO.getInstructorById(instructor.getId());
-
+        ImageIcon icon = new ImageIcon(("src/com/ahmedxmujtaba/UI/Icons/icon1.png"));
+        setIconImage(icon.getImage());
         setTitle("Course Registration Platform");
         setSize(900, 600);
         setLocationRelativeTo(null);
@@ -158,7 +158,7 @@ public class InstructorPortalUI extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 // Open search courses UI
-                SearchCoursesUI searchCoursesUI = new SearchCoursesUI(instructor);
+                SearchCoursesUI searchCoursesUI = new SearchCoursesUI(instructor.getId());
                 searchCoursesUI.setVisible(true);
                 // Close the current window
                 dispose();

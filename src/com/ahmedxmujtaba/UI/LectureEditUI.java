@@ -38,6 +38,9 @@ public class LectureEditUI extends JFrame {
         this.instructor = instructor;
         this.lecture = lecture;
 
+        ImageIcon icon = new ImageIcon(("src/com/ahmedxmujtaba/UI/Icons/icon1.png"));
+        setIconImage(icon.getImage());
+
         setTitle("Edit Lecture");
         setSize(900, 600); // Increased size
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);

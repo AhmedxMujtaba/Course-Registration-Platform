@@ -1,7 +1,7 @@
 package com.ahmedxmujtaba.DataBase;
 
-import com.ahmedxmujtaba.Entities.Student;
 import com.ahmedxmujtaba.Entities.Course;
+import com.ahmedxmujtaba.Entities.Student;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -54,32 +54,55 @@ public class StudentDAO {
         return student;
     }
 
-
     private void loadRegisteredCourses(Student student) {
+        dbLink.connect();
         String query = "SELECT courseId FROM StudentCourses WHERE studentId = " + student.getId();
         ResultSet rs = dbLink.executeQuery(query);
-        ArrayList<Course> courses = new ArrayList<>();
+        ArrayList<Integer> courseIds = new ArrayList<>();
         try {
             while (rs.next()) {
                 int courseId = rs.getInt("courseId");
-                // Assuming you have a CourseDAO to fetch course details
-                CourseDAO courseDAO = new CourseDAO(dbLink);
-                Course course = courseDAO.getCourseById(courseId);
-                courses.add(course);
+                courseIds.add(courseId);
             }
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            try {
+                if (rs != null) {
+                    rs.close(); // Close the ResultSet here
+                }
+                dbLink.disconnect();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
-        student.setRegisteredCourses(courses);
+        student.setRegisteredCourses(courseIds);
     }
 
-    public void registerCourse(Student student, Course course) {
+
+    public boolean registerCourse(Student student, Course course) {
+        // Check if the student is already registered for the course
+        String checkQuery = "SELECT * FROM StudentCourses WHERE studentId = " + student.getId() + " AND courseId = " + course.getId();
+        dbLink.connect();
+        ResultSet rs = dbLink.executeQuery(checkQuery);
+        try {
+            if (rs.next()) {
+                dbLink.disconnect();
+                return false; // Student is already registered
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            dbLink.disconnect();
+            return false;
+        }
+
+        // Register the student for the course
         String query = "INSERT INTO StudentCourses (studentId, courseId) VALUES ("
                 + student.getId() + ", "
                 + course.getId() + ")";
-        dbLink.connect();
         dbLink.executeUpdate(query);
         dbLink.disconnect();
+        return true;
     }
 
     public void unregisterCourse(Student student, Course course) {
@@ -88,5 +111,20 @@ public class StudentDAO {
         dbLink.connect();
         dbLink.executeUpdate(query);
         dbLink.disconnect();
+    }
+    public boolean isRegisteredForCourse(Student student, Course course) {
+        String query = "SELECT * FROM StudentCourses WHERE studentId = " + student.getId() + " AND courseId = " + course.getId();
+        dbLink.connect();
+        ResultSet rs = dbLink.executeQuery(query);
+        boolean isRegistered = false;
+        try {
+            if (rs.next()) {
+                isRegistered = true;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        dbLink.disconnect();
+        return isRegistered;
     }
 }

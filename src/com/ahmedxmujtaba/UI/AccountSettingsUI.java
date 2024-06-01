@@ -33,6 +33,9 @@ public class AccountSettingsUI extends JFrame {
     public AccountSettingsUI(User user) {
         this.user = user;
         this.dbLink = new DataBaseLink();
+
+        ImageIcon icon = new ImageIcon(("src/com/ahmedxmujtaba/UI/Icons/icon1.png"));
+        setIconImage(icon.getImage());
         setTitle("Account Settings");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(900, 600);

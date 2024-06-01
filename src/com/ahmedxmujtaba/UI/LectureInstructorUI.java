@@ -21,6 +21,9 @@ public class LectureInstructorUI extends JFrame {
     public LectureInstructorUI(Course course, Instructor instructor, Lecture lecture) {
         this.lecture = lecture;
 
+        ImageIcon icon = new ImageIcon(("src/com/ahmedxmujtaba/UI/Icons/icon1.png"));
+        setIconImage(icon.getImage());
+
         setTitle(lecture.getTitle());
         setSize(900, 600);
         setBackground(Color.darkGray);

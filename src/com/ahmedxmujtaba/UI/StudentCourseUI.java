@@ -14,7 +14,7 @@ import java.awt.event.ActionListener;
 import java.sql.SQLException;
 import java.util.List;
 
-public class CourseDetailsUI extends JFrame {
+public class StudentCourseUI extends JFrame {
     private Course course;
     private int userId;
     private Student student;
@@ -25,7 +25,7 @@ public class CourseDetailsUI extends JFrame {
     private final CourseDAO courseDAO = new CourseDAO(new DataBaseLink());
     private final LectureDAO lectureDAO = new LectureDAO(new DataBaseLink());
 
-    public CourseDetailsUI(Course course, int userId) {
+    public StudentCourseUI(Course course, int userId) {
         this.course = course;
         this.userId = userId;
 
@@ -54,14 +54,10 @@ public class CourseDetailsUI extends JFrame {
         courseNameLabel.setFont(titleFont);
         courseNameLabel.setHorizontalAlignment(JLabel.CENTER);
 
-        // Instructor and price labels
+        // Instructor label
         JLabel courseInstructorLabel = new JLabel("Instructor: " + getCourseInstructorName(course.getInstructorId()));
         courseInstructorLabel.setFont(customFont);
         courseInstructorLabel.setHorizontalAlignment(JLabel.CENTER);
-
-        JLabel coursePriceLabel = new JLabel("Price: Rs " + course.getPrice());
-        coursePriceLabel.setFont(customFont);
-        coursePriceLabel.setHorizontalAlignment(JLabel.CENTER);
 
         // Description panel
         JPanel descriptionPanel = new JPanel();
@@ -106,15 +102,19 @@ public class CourseDetailsUI extends JFrame {
         try {
             lectures = lectureDAO.getLecturesByCourseId(course.getId());
             for (Lecture lecture : lectures) {
-                String lectureTitle = lecture.getTitle();
-                JTextArea lectureLabel = new JTextArea(lectureTitle);
-                lectureLabel.setEditable(false);
-                lectureLabel.setLineWrap(true);
-                lectureLabel.setWrapStyleWord(true);
-                lectureLabel.setFont(new Font("04b03", Font.PLAIN, 18));
-                lectureLabel.setBackground(Color.WHITE);
-                lectureLabel.setBorder(new LineBorder(Color.white, 3));
-                lecturesPanel.add(lectureLabel);
+                JButton lectureButton = new JButton(lecture.getTitle());
+                lectureButton.setFont(new Font("04b03", Font.PLAIN, 18));
+                lectureButton.setBackground(Color.WHITE);
+                lectureButton.setBorder(BorderFactory.createLineBorder(Color.WHITE, 4));
+                lectureButton.setFocusPainted(false);
+                lectureButton.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        new StudentLectureUI(lecture, student).setVisible(true);
+                        dispose();
+                    }
+                });
+                lecturesPanel.add(lectureButton);
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -135,48 +135,10 @@ public class CourseDetailsUI extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 dispose();
-                if (isStudent()) {
-                    new SearchCoursesUI(student.getId()).setVisible(true);
-                } else {
-                    new SearchCoursesUI(instructor.getId()).setVisible(true);
-                }
+                new StudentUI(student).setVisible(true);
             }
         });
         buttonPanel.add(backButton);
-
-        // Register button
-        if (isStudent()) {
-            JButton registerButton = new JButton("Register");
-            registerButton.setBackground(Color.WHITE);
-            registerButton.setFont(customFont);
-            registerButton.setPreferredSize(new Dimension(150, 50));
-
-            if (studentDAO.isRegisteredForCourse(student, course)) {
-                {
-                    registerButton.setText("Registered");
-                    Font registerFont = new Font("04b03", Font.PLAIN, 20);
-                    registerButton.setFont(registerFont);
-                }
-                registerButton.setEnabled(false);
-            } else {
-                registerButton.setFocusable(false);
-                registerButton.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2));
-                registerButton.addActionListener(new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        boolean registered = studentDAO.registerCourse(student, course);
-                        if (registered) {
-                            registerButton.setText("Registered");
-                            registerButton.setEnabled(false);
-                            JOptionPane.showMessageDialog(null, "Successfully registered for the course!");
-                        } else {
-                            JOptionPane.showMessageDialog(null, "You are already registered for this course.");
-                        }
-                    }
-                });
-            }
-            buttonPanel.add(registerButton);
-        }
 
         // Layout manager for details
         GroupLayout layout = new GroupLayout(mainPanel);
@@ -188,7 +150,6 @@ public class CourseDetailsUI extends JFrame {
         layout.setHorizontalGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
                 .addComponent(courseNameLabel)
                 .addComponent(courseInstructorLabel)
-                .addComponent(coursePriceLabel)
                 .addGroup(layout.createSequentialGroup()
                         .addComponent(descriptionPanel)
                         .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
@@ -202,7 +163,6 @@ public class CourseDetailsUI extends JFrame {
         layout.setVerticalGroup(layout.createSequentialGroup()
                 .addComponent(courseNameLabel)
                 .addComponent(courseInstructorLabel)
-                .addComponent(coursePriceLabel)
                 .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
                         .addComponent(descriptionPanel)
                         .addGroup(layout.createSequentialGroup()

@@ -24,6 +24,10 @@ public class CreateCourseUI extends JFrame {
     private JLabel titleLabel;
 
     public CreateCourseUI(Instructor instructor) {
+
+        ImageIcon icon = new ImageIcon(("src/com/ahmedxmujtaba/UI/Icons/icon1.png"));
+        setIconImage(icon.getImage());
+
         setTitle("Course Registration Platform - Create Course");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(900, 600); // Increased size

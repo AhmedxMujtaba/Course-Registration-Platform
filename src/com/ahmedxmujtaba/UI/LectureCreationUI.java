@@ -33,6 +33,9 @@ public class LectureCreationUI extends JFrame {
         this.course = course;
         this.instructor = instructor;
 
+        ImageIcon icon = new ImageIcon(("src/com/ahmedxmujtaba/UI/Icons/icon1.png"));
+        setIconImage(icon.getImage());
+
         setTitle("Create Lecture");
         setSize(900, 600); // Increased size
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);

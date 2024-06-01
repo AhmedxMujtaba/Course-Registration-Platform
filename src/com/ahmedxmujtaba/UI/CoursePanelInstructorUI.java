@@ -20,6 +20,9 @@ public class CoursePanelInstructorUI extends JFrame {
         this.course = course;
         this.instructor = instructor;
 
+        ImageIcon icon = new ImageIcon(("src/com/ahmedxmujtaba/UI/Icons/icon1.png"));
+        setIconImage(icon.getImage());
+
         setTitle("Course Details");
         setSize(900, 600);
         setBackground(Color.darkGray);

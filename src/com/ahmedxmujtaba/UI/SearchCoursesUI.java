@@ -1,9 +1,8 @@
 package com.ahmedxmujtaba.UI;
-import com.ahmedxmujtaba.DataBase.CourseDAO;
-import com.ahmedxmujtaba.DataBase.DataBaseLink;
-import com.ahmedxmujtaba.DataBase.InstructorDAO;
+import com.ahmedxmujtaba.DataBase.*;
 import com.ahmedxmujtaba.Entities.Course;
 import com.ahmedxmujtaba.Entities.Instructor;
+import com.ahmedxmujtaba.Entities.Student;
 
 import javax.swing.*;
 import java.awt.*;
@@ -17,13 +16,22 @@ public class SearchCoursesUI extends JFrame {
     private JButton backButton;
     private JPanel resultsPanel;
     private JScrollPane scrollPane;
+    private int userId;
     private Instructor instructor;
-    private CourseDAO courseDAO;
+    private Student student;
+    private final UserDAO userDAO = new UserDAO(new DataBaseLink());
+    private final CourseDAO courseDAO = new CourseDAO(new DataBaseLink());
+    private final InstructorDAO instructorDAO = new InstructorDAO();
+    private final StudentDAO studentDAO = new StudentDAO(new DataBaseLink());
 
-    public SearchCoursesUI(Instructor instructor) {
-        this.instructor = instructor;
-        this.courseDAO = new CourseDAO(new DataBaseLink());
+    public SearchCoursesUI(int id ) {
+        this.userId = id;
 
+        ImageIcon icon = new ImageIcon(("src/com/ahmedxmujtaba/UI/Icons/icon1.png"));
+        setIconImage(icon.getImage());
+
+        //find the user
+        findUserType();
         setTitle("Course Registration Platform - Search Courses");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(900, 600);
@@ -80,7 +88,12 @@ public class SearchCoursesUI extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 dispose();
-                new InstructorPortalUI(instructor).setVisible(true);
+                //check if the user is a student or instructor and sent them back to their respective portal
+                if (isStudent()){
+                    new StudentUI(student).setVisible(true);
+                }
+                else
+                    new InstructorPortalUI(instructor).setVisible(true);
             }
         });
 
@@ -132,14 +145,19 @@ public class SearchCoursesUI extends JFrame {
                 courseDescriptionArea.setWrapStyleWord(true);
                 courseDescriptionArea.setEditable(false);
                 courseDescriptionArea.setBackground(Color.WHITE);
-                courseDescriptionArea.setBorder(null); // Remove border
+                courseDescriptionArea.setBorder(null);
 
                 styleButton(courseButton);
                 courseButton.addActionListener(new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
-                        new CourseDetailsUI(course, instructor.getId()).setVisible(true);
                         dispose();
+                        if (isStudent()) {
+                            new CourseDetailsUI(course, student.getId()).setVisible(true);
+                        }
+                        else {
+                            new CourseDetailsUI(course, instructor.getId()).setVisible(true);
+                        }
                     }
                 });
 
@@ -160,9 +178,22 @@ public class SearchCoursesUI extends JFrame {
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
             InstructorDAO instructorDAO = new InstructorDAO();
-            Instructor instructor = instructorDAO.getInstructorById(7); // Fetch instructor with ID 7 from database
-            new SearchCoursesUI(instructor);
+            Instructor instructor = instructorDAO.getInstructorById(8); // Fetch instructor with ID 7 from database
+            new SearchCoursesUI(8);
         });
     }
+    private boolean isStudent() {
+        return student != null;
+    }
+
+    private void findUserType(){
+        if (userDAO.isStudent(userId)){
+            this.student = studentDAO.getStudentById(userId);
+            instructor = null;
+        }
+        else if (userDAO.isInstructor(userId)){
+            this.instructor = instructorDAO.getInstructorById(userId);
+            student = null;
+        }
+    }
 }
-//todo modify class to accommodate both students and instructors..
