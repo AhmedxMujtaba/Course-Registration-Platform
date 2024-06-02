@@ -110,7 +110,7 @@ public class StudentCourseUI extends JFrame {
                 lectureButton.addActionListener(new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
-                        new StudentLectureUI(lecture, student).setVisible(true);
+                        new StudentLectureUI(course,lecture, student).setVisible(true);
                         dispose();
                     }
                 });
