@@ -13,18 +13,6 @@ public class InstructorDAO {
         dbLink = new DataBaseLink();
     }
 
-    public void addInstructor(Instructor instructor) {
-        String query = "INSERT INTO instructors (userId, income) VALUES (?, ?)";
-        try (Connection connection = dbLink.getConnection();
-             PreparedStatement pstmt = connection.prepareStatement(query)) {
-            pstmt.setInt(1, instructor.getId());
-            pstmt.setDouble(2, instructor.getIncome());
-            pstmt.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
     public Instructor getInstructorById(int userId) {
         Instructor instructor = null;
         try {
@@ -91,7 +79,39 @@ public class InstructorDAO {
     }
 
     public double calculateIncome(Instructor instructor) {
-        // For now, return 0 as requested
-        return 0.0;
+        // Connect to the database
+        dbLink.connect();
+        double income = 0;
+        String query = "SELECT COUNT(*) FROM StudentCourses WHERE courseId = ?";
+
+        try (Connection connection = dbLink.getConnection();
+             PreparedStatement pstmt = connection.prepareStatement(query)) {
+
+            // Iterate through each course ID taught by the instructor
+            for (String currentCourseId : instructor.getCourseIds()) {
+                // Set the course ID parameter in the query
+                pstmt.setInt(1, Integer.parseInt(currentCourseId));
+                try (ResultSet rs = pstmt.executeQuery()) {
+                    if (rs.next()) {
+                        // Get the number of students enrolled in the current course
+                        int studentCount = rs.getInt(1);
+
+                        // Fetch the course details to get the price
+                        Course course = getCourseById(currentCourseId);
+                        if (course != null) {
+                            // Calculate income for the current course
+                            income += course.getPrice() * studentCount;
+                        }
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            dbLink.disconnect();
+        }
+
+        return income;
     }
+
 }

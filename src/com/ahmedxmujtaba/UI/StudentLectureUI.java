@@ -13,10 +13,23 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 
+
+
 public class StudentLectureUI extends JFrame {
+    private Course course;
+    private Lecture lecture;
+    private Student student;
 
     public StudentLectureUI(Course course, Lecture lecture, Student student) {
+
+        this.course = course;
+        this.lecture = lecture;
+        this.student = student;
+
         // Set the frame properties
+        ImageIcon icon = new ImageIcon(("src/com/ahmedxmujtaba/UI/Icons/icon1.png"));
+        setIconImage(icon.getImage());
+
         setTitle("Lecture Details");
         setSize(900, 600);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
