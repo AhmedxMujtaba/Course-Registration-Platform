@@ -85,8 +85,8 @@ public class CoursePanelInstructorUI extends JFrame {
         editCourseDetailsButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // Open a new window to edit course details
-                // You can implement this functionality based on your requirements
+                dispose();
+                new CourseEditUI(course,instructor).setVisible(true);
             }
         });
 

@@ -151,7 +151,7 @@ public class StudentLectureUI extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 dispose();
-                new CourseDetailsUI(course, student.getId()).setVisible(true);
+                new StudentCourseUI(course, student.getId()).setVisible(true);
             }
         });
 

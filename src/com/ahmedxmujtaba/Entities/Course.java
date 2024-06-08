@@ -83,5 +83,4 @@ public class Course {
     public void removeRegisteredStudentID(int studentID) {
         registeredStudentIDs.remove((Integer) studentID);
     }
-
 }

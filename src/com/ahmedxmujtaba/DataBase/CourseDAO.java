@@ -133,4 +133,33 @@ public class CourseDAO {
         dbLink.disconnect();
         return courses;
     }
+    public boolean updateCourse(Course course) {
+        String query = "UPDATE Courses SET name = '" + course.getName() + "', " +
+                "description = '" + course.getDescription() + "', " +
+                "instructorId = " + course.getInstructorId() + ", " +
+                "price = " + course.getPrice() + " WHERE id = " + course.getId();
+        dbLink.connect();
+        boolean isSuccess = false;
+        try {
+            int rowsAffected = dbLink.executeUpdate(query);
+            isSuccess = rowsAffected > 0;
+        } finally {
+            dbLink.disconnect();
+        }
+        return isSuccess;
+    }
+
+    public boolean deleteCourse(int courseId) {
+        String query = "DELETE FROM Courses WHERE id = " + courseId;
+        dbLink.connect();
+        boolean isSuccess = false;
+        try {
+            int rowsAffected = dbLink.executeUpdate(query);
+            isSuccess = rowsAffected > 0;
+        } finally {
+            dbLink.disconnect();
+        }
+        return isSuccess;
+    }
+
 }
