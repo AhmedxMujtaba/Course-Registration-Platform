@@ -198,13 +198,4 @@ public class StudentUI extends JFrame {
         coursesPanel.revalidate();
         coursesPanel.repaint();
     }
-
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            StudentDAO studentDAO = new StudentDAO(new DataBaseLink());
-            Student student = studentDAO.getStudentById(8);
-            StudentUI studentPage = new StudentUI(student);
-            studentPage.setVisible(true);
-        });
-    }
 }

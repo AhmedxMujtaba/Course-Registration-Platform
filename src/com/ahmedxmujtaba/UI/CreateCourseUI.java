@@ -193,12 +193,4 @@ public class CreateCourseUI extends JFrame {
         messageLabel.setText(message);
         messageLabel.setForeground(Color.BLACK);
     }
-
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            InstructorDAO instructorDAO = new InstructorDAO();
-            Instructor instructor = instructorDAO.getInstructorById(7); // Fetch instructor with ID 7 from database
-            new CreateCourseUI(instructor);
-        });
-    }
 }

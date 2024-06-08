@@ -415,5 +415,3 @@ public class LectureEditUI extends JFrame {
         new CoursePanelInstructorUI(course,instructor).setVisible(true);
     }
 }
-//todo needs changing..
-// ..................

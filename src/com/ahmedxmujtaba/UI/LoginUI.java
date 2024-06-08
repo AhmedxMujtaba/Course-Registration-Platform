@@ -198,10 +198,4 @@ public class LoginUI extends JFrame {
 
         setVisible(true); // Make the login UI visible
     }
-
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            new LoginUI();
-        });
-    }
-}
+`}

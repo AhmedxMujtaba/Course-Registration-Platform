@@ -110,14 +110,4 @@ public class StartingUI extends JFrame {
         // Center the frame on the screen
         setLocationRelativeTo(null);
     }
-
-    // Implement methods to show LoginUI and SignUpUI based on your implementation
-
-    public static void main(String[] args) {
-        // Display login or signup page
-        SwingUtilities.invokeLater(() -> {
-            StartingUI startingUI = new StartingUI();
-            startingUI.setVisible(true);
-        });
-    }
 }

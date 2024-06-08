@@ -192,10 +192,4 @@ public class StudentCourseUI extends JFrame {
             student = null;
         }
     }
-
-    public static void main(String[] args) {
-        // Sample data for testing
-        Course sampleCourse = new Course(1, "Sample Course", "This is a sample course description.", 1, 1000.0);
-        new CourseDetailsUI(sampleCourse, 1).setVisible(true);
-    }
 }

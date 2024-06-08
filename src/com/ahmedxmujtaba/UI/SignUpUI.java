@@ -282,8 +282,4 @@ public class SignUpUI extends JFrame {
         Pattern pat = Pattern.compile(emailRegex);
         return pat.matcher(email).matches();
     }
-
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> new SignUpUI().setVisible(true));
-    }
 }
