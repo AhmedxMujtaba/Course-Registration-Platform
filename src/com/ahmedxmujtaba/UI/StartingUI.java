@@ -35,13 +35,13 @@ public class StartingUI extends JFrame {
         loginButton = new JButton("Login");
         signupButton = new JButton("Sign Up");
 
-        Font buttonPixelFont = new Font("04b03", Font.PLAIN, 23);
+        Font buttonPixelFont = new Font("04b03", Font.PLAIN, 30);
         loginButton.setFont(buttonPixelFont);
         signupButton.setFont(buttonPixelFont);
 
         // Set button border and background for high contrast
-        loginButton.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2)); // Black border with 2 pixels thickness
-        signupButton.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2)); // Black border with 2 pixels thickness
+        loginButton.setBorder(BorderFactory.createLineBorder(Color.BLACK, 3)); // Black border with 2 pixels thickness
+        signupButton.setBorder(BorderFactory.createLineBorder(Color.BLACK, 3)); // Black border with 2 pixels thickness
         loginButton.setBackground(Color.WHITE); // White background
         signupButton.setBackground(Color.WHITE); // White background
         loginButton.setOpaque(true); // Make sure the background color is applied
@@ -85,7 +85,7 @@ public class StartingUI extends JFrame {
 
         // Add signup button
         gbc.gridy = 3;
-        signupButton.setPreferredSize(new Dimension(100, 50)); // Set button size
+        signupButton.setPreferredSize(new Dimension(150, 60)); // Set button size
         buttonPanel.add(signupButton, gbc);
 
         // Add action listeners to login and signup buttons

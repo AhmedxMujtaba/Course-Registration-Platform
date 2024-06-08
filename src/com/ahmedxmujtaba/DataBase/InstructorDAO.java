@@ -78,40 +78,81 @@ public class InstructorDAO {
         return course;
     }
 
-    public double calculateIncome(Instructor instructor) {
-        // Connect to the database
-        dbLink.connect();
-        double income = 0;
-        String query = "SELECT COUNT(*) FROM StudentCourses WHERE courseId = ?";
+    public int getTotalStudents(String courseId, DataBaseLink dbLink) {
+        int totalStudents = 0;
+        String query = "SELECT COUNT(*) FROM studentcourses WHERE courseId = ?";
+        ResultSet rs = null;
+        PreparedStatement pstmt = null;
+        try {
+            // Connect to the database
+            dbLink.connect();
 
-        try (Connection connection = dbLink.getConnection();
-             PreparedStatement pstmt = connection.prepareStatement(query)) {
+            // Create the PreparedStatement
+            pstmt = dbLink.getConnection().prepareStatement(query);
 
-            // Iterate through each course ID taught by the instructor
-            for (String currentCourseId : instructor.getCourseIds()) {
-                // Set the course ID parameter in the query
-                pstmt.setInt(1, Integer.parseInt(currentCourseId));
-                try (ResultSet rs = pstmt.executeQuery()) {
-                    if (rs.next()) {
-                        // Get the number of students enrolled in the current course
-                        int studentCount = rs.getInt(1);
+            // Set the courseId parameter
+            pstmt.setString(1, courseId);
 
-                        // Fetch the course details to get the price
-                        Course course = getCourseById(currentCourseId);
-                        if (course != null) {
-                            // Calculate income for the current course
-                            income += course.getPrice() * studentCount;
-                        }
-                    }
-                }
+            // Execute the query
+            rs = pstmt.executeQuery();
+
+            // Process the result
+            if (rs.next()) {
+                totalStudents = rs.getInt(1);
             }
         } catch (SQLException e) {
+            e.printStackTrace();
             throw new RuntimeException(e);
         } finally {
+            // Close resources
+            if (rs != null) {
+                try {
+                    rs.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (pstmt != null) {
+                try {
+                    pstmt.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            // Disconnect from the database
             dbLink.disconnect();
         }
-
-        return income;
+        return totalStudents;
     }
 
+    public double getCoursePrice(String courseId) {
+        Course course = getCourseById(courseId);
+        if (course != null) {
+            return course.getPrice();
+        } else {
+            return 0;
+        }
+    }
+    public double calculateIncome(Instructor instructor) {
+        double income = 0;
+dbLink.connect();
+        try {
+            // Iterate through each course ID taught by the instructor
+            for (String currentCourseId : instructor.getCourseIds()) {
+                // Get the total students enrolled in the current course
+                int studentCount = getTotalStudents(currentCourseId, dbLink);
+
+                // Get the course price
+                double coursePrice = getCoursePrice(currentCourseId);
+
+                // Calculate income for the current course
+                income += coursePrice * studentCount;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+        dbLink.disconnect();
+        return income;
+    }
 }
