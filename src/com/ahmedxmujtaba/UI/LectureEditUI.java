@@ -13,7 +13,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -126,16 +125,16 @@ public class LectureEditUI extends JFrame {
             }
         });
 
-        // todo change back button to delete button
-        JButton backButton = new JButton("Delete Lecture");
-        backButton.setFont(customFont);
-        backButton.setBackground(Color.WHITE);
-        backButton.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-        backButton.setFocusPainted(false);
-        backButton.addActionListener(new ActionListener() {
+        JButton deleteButton = new JButton("Delete Lecture");
+        deleteButton.setFont(customFont);
+        deleteButton.setBackground(Color.WHITE);
+        deleteButton.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+        deleteButton.setFocusPainted(false);
+        deleteButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 dispose();
+                lectureDAO.deleteLectureById(lecture.getId());
                 CoursePanelInstructorUI coursePanelInstructorUI = new CoursePanelInstructorUI(course,instructor);
                 coursePanelInstructorUI.setVisible(true);
             }
@@ -183,7 +182,7 @@ public class LectureEditUI extends JFrame {
         gbc.gridx = 0;
         gbc.gridy++;
         gbc.gridwidth = 2;
-        add(backButton, gbc);
+        add(deleteButton, gbc);
     }
 
     private void addExistingNotes() {
@@ -417,3 +416,4 @@ public class LectureEditUI extends JFrame {
     }
 }
 //todo needs changing..
+// ..................
