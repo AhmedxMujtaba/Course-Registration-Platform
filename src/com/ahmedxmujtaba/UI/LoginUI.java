@@ -198,4 +198,4 @@ public class LoginUI extends JFrame {
 
         setVisible(true); // Make the login UI visible
     }
-`}
+}
