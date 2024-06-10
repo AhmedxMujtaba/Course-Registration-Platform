@@ -1,5 +1,6 @@
 package com.ahmedxmujtaba.UI;
 
+import com.ahmedxmujtaba.DataBase.CourseDAO;
 import com.ahmedxmujtaba.DataBase.DataBaseLink;
 import com.ahmedxmujtaba.DataBase.LectureDAO;
 import com.ahmedxmujtaba.Entities.Course;
@@ -292,8 +293,9 @@ public class LectureCreationUI extends JFrame {
 
         JOptionPane.showMessageDialog(this, "Lecture created successfully.", "Success", JOptionPane.INFORMATION_MESSAGE);
         dispose();
-        CoursePanelInstructorUI coursePanelInstructorUI = new CoursePanelInstructorUI(course,instructor);
-
+        CourseDAO courseDAO = new CourseDAO(new DataBaseLink());
+        //we need to update the course details from database
+        CoursePanelInstructorUI coursePanelInstructorUI = new CoursePanelInstructorUI(courseDAO.getCourseById(course.getId()),instructor);
         coursePanelInstructorUI.dispose();
 
     }

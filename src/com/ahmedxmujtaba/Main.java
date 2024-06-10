@@ -5,10 +5,13 @@ import com.ahmedxmujtaba.UI.StartingUI;
 public class Main {
     public static void main(String[] args)
     {
+       startUI();
+    }
+
+    private static void startUI(){
         new StartingUI().setVisible(true);
     }
 }
-
 
 /*
 How does the program work?

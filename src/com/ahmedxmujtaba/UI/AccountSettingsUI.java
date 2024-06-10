@@ -280,7 +280,7 @@ public class AccountSettingsUI extends JFrame {
                 }
                 else if (us.isStudent(currentUserId)){
                     dispose();
-                    //todo impliment for student portal UI
+                    new StudentUI(su.getStudentById(currentUserId)).setVisible(true);
                 }
             }
         });
