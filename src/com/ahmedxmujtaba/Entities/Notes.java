@@ -44,11 +44,4 @@ public class Notes {
         this.notes = notes;
     }
 
-    public int getLectureId() {
-        return lectureId;
-    }
-
-    public void setLectureId(int lectureId) {
-        this.lectureId = lectureId;
-    }
 }

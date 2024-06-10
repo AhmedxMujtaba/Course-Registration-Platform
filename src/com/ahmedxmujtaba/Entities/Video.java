@@ -55,11 +55,4 @@ public class Video {
         this.description = description;
     }
 
-    public int getLectureId() {
-        return lectureId;
-    }
-
-    public void setLectureId(int lectureId) {
-        this.lectureId = lectureId;
-    }
 }

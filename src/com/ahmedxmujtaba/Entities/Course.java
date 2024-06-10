@@ -69,18 +69,8 @@ public class Course {
         this.price = price;
     }
 
-    public ArrayList<Integer> getRegisteredStudentIDs() {
-        return registeredStudentIDs;
-    }
     public int getNoOfStudents(){
         return registeredStudentIDs.size();
     }
 
-    public void addRegisteredStudentID(int studentID) {
-        registeredStudentIDs.add(studentID);
-    }
-
-    public void removeRegisteredStudentID(int studentID) {
-        registeredStudentIDs.remove((Integer) studentID);
-    }
 }

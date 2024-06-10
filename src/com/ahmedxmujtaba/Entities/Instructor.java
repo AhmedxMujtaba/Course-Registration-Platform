@@ -19,23 +19,7 @@ public class Instructor extends User {
         courseIds.add(id);
     }
 
-    // Method to delete a course
-    public void deleteCourse(String id) {
-        courseIds.remove(id);
-    }
-
     // Method to check the number of students enrolled in a course
-    private int checkStudentsNo(Course course) {
-        // Assuming Course class has a method getEnrolledStudents() returning a list of students
-        return course.getNoOfStudents();
-    }
-
-    // Method to check the income generated from a course
-    public double checkIncome(Course course) {
-        // Assuming Course class has a method getPrice() returning the price of the course
-        return course.getPrice() * checkStudentsNo(course);
-    }
-
     public void setIncome(double income) {
         this.income = income;
     }
@@ -48,7 +32,4 @@ public class Instructor extends User {
         return courseIds;
     }
 
-    public void setCourseIds(ArrayList<String> courseIds) {
-        this.courseIds = courseIds;
-    }
 }

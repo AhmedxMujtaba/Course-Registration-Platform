@@ -10,24 +10,8 @@ public class Student extends User {
         super(id, name, password, email, phoneNumber);
 
     }
-
-    // Getter and setter for registeredCourses
-    public ArrayList<Integer> getRegisteredCourses() {
-        return registeredCoursesIds;
-    }
-
     public void setRegisteredCourses(ArrayList<Integer> registeredCourses) {
         this.registeredCoursesIds = registeredCourses;
-    }
-
-    // Method to register for a course
-    public void registerCourse(Course course) {
-        registeredCoursesIds.add(course.getId());
-    }
-
-    // Method to unregister from a course
-    public void unregisterCourse(Course course) {
-        registeredCoursesIds.remove(course.getId());
     }
 
     // Method to get list of registered courses

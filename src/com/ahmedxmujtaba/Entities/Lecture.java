@@ -32,10 +32,6 @@ public class Lecture {
         return courseId;
     }
 
-    public void setCourseId(int courseId) {
-        this.courseId = courseId;
-    }
-
     public String getTitle() {
         return title;
     }

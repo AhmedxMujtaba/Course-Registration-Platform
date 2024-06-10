@@ -22,7 +22,6 @@ public class CourseDetailsUI extends JFrame {
     private final UserDAO userDAO = new UserDAO(new DataBaseLink());
     private final StudentDAO studentDAO = new StudentDAO(new DataBaseLink());
     private final InstructorDAO instructorDAO = new InstructorDAO();
-    private final CourseDAO courseDAO = new CourseDAO(new DataBaseLink());
     private final LectureDAO lectureDAO = new LectureDAO(new DataBaseLink());
 
     public CourseDetailsUI(Course course, int userId) {
@@ -35,7 +34,7 @@ public class CourseDetailsUI extends JFrame {
         // Call method to get the user or instructor
         findUserType();
 
-        setTitle("Course Details");
+        setTitle(course.getName());
         setSize(900, 600);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
