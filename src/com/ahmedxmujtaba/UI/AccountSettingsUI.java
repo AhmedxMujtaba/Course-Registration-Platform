@@ -268,7 +268,6 @@ public class AccountSettingsUI extends JFrame {
             public void actionPerformed(ActionEvent e) {
 
                 UserDAO us = new UserDAO(new DataBaseLink());
-                //todo fix this and keep consistency throughout code
                 InstructorDAO is = new InstructorDAO();
                 StudentDAO su = new StudentDAO(new DataBaseLink());
                 int currentUserId = user.getId();

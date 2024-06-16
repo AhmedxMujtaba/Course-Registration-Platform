@@ -6,14 +6,11 @@ import com.ahmedxmujtaba.DataBase.LectureDAO;
 import com.ahmedxmujtaba.Entities.Course;
 import com.ahmedxmujtaba.Entities.Instructor;
 import com.ahmedxmujtaba.Entities.Lecture;
-import com.ahmedxmujtaba.Entities.Notes;
-import com.ahmedxmujtaba.Entities.Video;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.sql.SQLException;
 import java.util.ArrayList;
 
 public class LectureCreationUI extends JFrame {

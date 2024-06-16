@@ -1,6 +1,8 @@
 package com.ahmedxmujtaba.DataBase;
 
 import com.ahmedxmujtaba.Entities.Course;
+import com.ahmedxmujtaba.Security.Log;
+
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -51,63 +53,12 @@ public class CourseDAO {
             }
         } catch (SQLException e) {
             e.printStackTrace();
+            Log.logError("Unable to get Course by ID (Server may be down)" + getClass());
         }
         dbLink.disconnect();
         return course;
     }
 
-    public Course getCourseByName(String name) {
-        String query = "SELECT * FROM Courses WHERE name = '" + name + "'";
-        dbLink.connect();
-        ResultSet rs = dbLink.executeQuery(query);
-        Course course = null;
-        try {
-            if (rs.next()) {
-                course = new Course(
-                        rs.getInt("id"),
-                        rs.getString("name"),
-                        rs.getString("description"),
-                        rs.getInt("instructorId"),
-                        rs.getDouble("price")
-                );
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        dbLink.disconnect();
-        return course;
-    }
-
-    public ArrayList<Integer> getRegisteredStudentsForCourse(int courseId) {
-        ArrayList<Integer> registeredStudents = new ArrayList<>();
-        String query = "SELECT studentId FROM StudentCourses WHERE courseId = " + courseId;
-        dbLink.connect();
-        ResultSet rs = dbLink.executeQuery(query);
-        try {
-            while (rs.next()) {
-                int studentId = rs.getInt("studentId");
-                registeredStudents.add(studentId);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        dbLink.disconnect();
-        return registeredStudents;
-    }
-
-    public void registerStudentForCourse(int courseId, int studentId) {
-        String query = "INSERT INTO StudentCourses (courseId, studentId) VALUES (" + courseId + ", " + studentId + ")";
-        dbLink.connect();
-        dbLink.executeUpdate(query);
-        dbLink.disconnect();
-    }
-
-    public void unregisterStudentFromCourse(int courseId, int studentId) {
-        String query = "DELETE FROM StudentCourses WHERE courseId = " + courseId + " AND studentId = " + studentId;
-        dbLink.connect();
-        dbLink.executeUpdate(query);
-        dbLink.disconnect();
-    }
 
     // New method to search courses by name
     public List<Course> searchCoursesByName(String name) {
@@ -129,6 +80,7 @@ public class CourseDAO {
             }
         } catch (SQLException e) {
             e.printStackTrace();
+            Log.logError("Unable to Search Course by Name (Server may be down)" + getClass());
         }
         dbLink.disconnect();
         return courses;
