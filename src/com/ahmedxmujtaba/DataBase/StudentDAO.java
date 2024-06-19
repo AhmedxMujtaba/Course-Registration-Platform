@@ -16,7 +16,7 @@ public class StudentDAO {
 
     public void addStudent(Student student) {
         // First, add the user to the Users table
-        String query = "INSERT INTO Users (name, password, email, phoneNumber) VALUES ('"
+        String query = "INSERT INTO Users (name, password_hash, email, phoneNumber) VALUES ('"
                 + student.getName() + "', '"
                 + student.getPasswordHash() + "', '"
                 + student.getEmail() + "', "
@@ -40,7 +40,7 @@ public class StudentDAO {
                 student = new Student(
                         userId,
                         rs.getString("name"),
-                        rs.getString("password"),
+                        rs.getString("password_hash"),
                         rs.getString("email"),
                         rs.getInt("phoneNumber")
                 );
