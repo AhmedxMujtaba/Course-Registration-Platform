@@ -75,6 +75,7 @@ public class CoursePanelInstructorUI extends JFrame {
         createLectureButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                dispose();
                 LectureCreationUI lectureCreationUI = new LectureCreationUI(course, instructor);
                 lectureCreationUI.setVisible(true);
             }

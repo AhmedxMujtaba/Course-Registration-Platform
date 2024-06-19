@@ -174,14 +174,6 @@ public class SearchCoursesUI extends JFrame {
         resultsPanel.revalidate();
         resultsPanel.repaint();
     }
-
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            InstructorDAO instructorDAO = new InstructorDAO();
-            Instructor instructor = instructorDAO.getInstructorById(8); // Fetch instructor with ID 7 from database
-            new SearchCoursesUI(8);
-        });
-    }
     private boolean isStudent() {
         return student != null;
     }

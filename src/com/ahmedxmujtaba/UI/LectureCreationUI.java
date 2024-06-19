@@ -292,8 +292,8 @@ public class LectureCreationUI extends JFrame {
         dispose();
         CourseDAO courseDAO = new CourseDAO(new DataBaseLink());
         //we need to update the course details from database
+        dispose();
         CoursePanelInstructorUI coursePanelInstructorUI = new CoursePanelInstructorUI(courseDAO.getCourseById(course.getId()),instructor);
-        coursePanelInstructorUI.dispose();
-
+        coursePanelInstructorUI.setVisible(true);
     }
 }

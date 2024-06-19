@@ -163,14 +163,8 @@ public class CourseDetailsUI extends JFrame {
                 registerButton.addActionListener(new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
-                        boolean registered = studentDAO.registerCourse(student, course);
-                        if (registered) {
-                            registerButton.setText("Registered");
-                            registerButton.setEnabled(false);
-                            JOptionPane.showMessageDialog(null, "Successfully registered for the course!");
-                        } else {
-                            JOptionPane.showMessageDialog(null, "You are already registered for this course.");
-                        }
+                        dispose();
+                        new Billing(course,student).setVisible(true);
                     }
                 });
             }
