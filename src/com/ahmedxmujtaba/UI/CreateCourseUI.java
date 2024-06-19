@@ -141,8 +141,8 @@ public class CreateCourseUI extends JFrame {
         createCourseButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String courseName = courseNameField.getText();
-                String description = descriptionArea.getText();
+                String courseName = courseNameField.getText().trim();
+                String description = descriptionArea.getText().trim();
                 double price;
 
                 try {
@@ -157,6 +157,11 @@ public class CreateCourseUI extends JFrame {
                     return;
                 }
 
+                if (!isValidInput(courseName) || !isValidInput(description)) {
+                    displayErrorMessage("Name and description must have at least 2 characters and cannot contain invalid characters.");
+                    return;
+                }
+
                 CourseDAO courseDAO = new CourseDAO(new DataBaseLink());
                 Course newCourse = new Course(courseName, description, instructor.getId(), price);
                 boolean success = courseDAO.addCourse(newCourse);
@@ -167,7 +172,14 @@ public class CreateCourseUI extends JFrame {
                     displayErrorMessage("There was an error creating the course. Please try again.");
                 }
             }
+
+            private boolean isValidInput(String input) {
+                // Ensure the input has at least 2 characters and only valid characters
+                String validCharsRegex = "^[a-zA-Z0-9 ,.!?'-]{2,}$";
+                return input.matches(validCharsRegex);
+            }
         });
+
 
         backButton.addActionListener(new ActionListener() {
             @Override

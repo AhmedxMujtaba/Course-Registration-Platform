@@ -199,24 +199,34 @@ public class SignUpUI extends JFrame {
                 try {
                     String name = nameField.getText();
                     String email = emailField.getText();
-                    String password = new String(passwordField.getPassword());
+                    String password = new String(passwordField.getPassword()).trim(); // Trim to remove leading/trailing spaces
                     String phoneNumberStr = phoneNumberField.getText();
 
+                    // Validate name, email, password, and phone number fields
                     if (name.isEmpty() || email.isEmpty() || password.isEmpty() || phoneNumberStr.isEmpty()) {
                         displayErrorMessage("All fields must be filled out.");
                         return;
                     }
 
+                    // Validate name format (no special characters, not only spaces)
+                    if (!isValidNameFormat(name)) {
+                        displayErrorMessage("Name must not contain special characters.");
+                        return;
+                    }
+
+                    // Validate email format
                     if (!isValidEmail(email)) {
                         displayErrorMessage("Invalid email format.");
                         return;
                     }
 
-                    if (password.length() < 8) {
-                        displayErrorMessage("Password must be at least 8 characters long.");
+                    // Validate password length and content
+                    if (password.length() < 8 || password.matches("\\s+")) {
+                        displayErrorMessage("Password must be at least 8 characters long and cannot consist of spaces only.");
                         return;
                     }
 
+                    // Validate phone number format
                     int phoneNumber;
                     try {
                         phoneNumber = Integer.parseInt(phoneNumberStr);
@@ -225,17 +235,21 @@ public class SignUpUI extends JFrame {
                         return;
                     }
 
+                    // Get selected user type from combo box
                     String userType = (String) userTypeComboBox.getSelectedItem();
 
+                    // Create new User object
                     User newUser = new User(0, name, password, email, phoneNumber);
                     DataBaseLink dbLink = new DataBaseLink();
                     UserDAO userDAO = new UserDAO(dbLink);
 
+                    // Check if email already exists
                     if (userDAO.emailExists(email)) {
                         displayErrorMessage("Email already exists. Please use a different email.");
                         return;
                     }
 
+                    // Add user based on selected user type
                     boolean success;
                     if (userType.equals("Student")) {
                         success = userDAO.addStudent(newUser);
@@ -243,6 +257,7 @@ public class SignUpUI extends JFrame {
                         success = userDAO.addInstructor(newUser);
                     }
 
+                    // Display success or error message based on operation success
                     if (success) {
                         displaySuccessMessage("User signed up successfully as " + userType + "!");
                     } else {
@@ -252,7 +267,13 @@ public class SignUpUI extends JFrame {
                     displayErrorMessage("An unexpected error occurred. Please try again.");
                 }
             }
+
+            private boolean isValidNameFormat(String name) {
+                // Name should not contain special characters and should not consist only of spaces
+                return name.matches("^[a-zA-Z0-9]+(?:[\\s-][a-zA-Z0-9]+)*$");
+            }
         });
+
 
         backButton.addActionListener(new ActionListener() {
             @Override

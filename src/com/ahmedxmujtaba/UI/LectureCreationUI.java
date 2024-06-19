@@ -7,6 +7,7 @@ import com.ahmedxmujtaba.Entities.Course;
 import com.ahmedxmujtaba.Entities.Instructor;
 import com.ahmedxmujtaba.Entities.Lecture;
 
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -259,8 +260,8 @@ public class LectureCreationUI extends JFrame {
 
     private void createLecture() {
         String lectureTitle = lectureTitleField.getText().trim();
-        if (lectureTitle.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Lecture title cannot be empty.", "Error", JOptionPane.ERROR_MESSAGE);
+        if (lectureTitle.isEmpty() || !isValidNameFormat(lectureTitle)) {
+            JOptionPane.showMessageDialog(this, "Lecture title must not be empty and should not contain special characters.", "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
 
@@ -291,9 +292,12 @@ public class LectureCreationUI extends JFrame {
         JOptionPane.showMessageDialog(this, "Lecture created successfully.", "Success", JOptionPane.INFORMATION_MESSAGE);
         dispose();
         CourseDAO courseDAO = new CourseDAO(new DataBaseLink());
-        //we need to update the course details from database
-        dispose();
-        CoursePanelInstructorUI coursePanelInstructorUI = new CoursePanelInstructorUI(courseDAO.getCourseById(course.getId()),instructor);
+        CoursePanelInstructorUI coursePanelInstructorUI = new CoursePanelInstructorUI(courseDAO.getCourseById(course.getId()), instructor);
         coursePanelInstructorUI.setVisible(true);
+    }
+
+    private boolean isValidNameFormat(String name) {
+        // Name should not contain special characters
+        return name.matches("^[a-zA-Z0-9]+(?:[\\s-][a-zA-Z0-9]+)*$");
     }
 }

@@ -18,6 +18,13 @@ public class Main {
     private static void makeLog(){ Log log = new Log(); }
 }
 
+//todo
+// make sure the course and lectures , names do not take blank and in valid characters and have digits
+// more than 1 Character
+// Course
+// lecture
+// user
+
 
 /*
  * How does the program work?

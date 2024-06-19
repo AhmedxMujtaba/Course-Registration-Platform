@@ -201,7 +201,7 @@ public class AccountSettingsUI extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 // Get the updated user information from the UI fields
                 String newName = nameField.getText().trim();
-                String newPassword = new String(passwordField.getPassword());
+                String newPassword = new String(passwordField.getPassword()).trim();
                 String newPhoneNumber = phoneNumberField.getText().trim();
 
                 // Perform validation checks
@@ -210,7 +210,20 @@ public class AccountSettingsUI extends JFrame {
                     return;
                 }
 
-                if (newPassword.length() < 8) {
+                // Check for special characters in the name
+                if (!newName.matches("[a-zA-Z0-9 ]+")) {
+                    displayErrorMessage("Username cannot contain special characters.");
+                    return;
+                }
+
+                // Check if the name is only spaces
+                if (newName.trim().isEmpty()) {
+                    displayErrorMessage("Username cannot be only spaces.");
+                    return;
+                }
+
+                // Validate password length
+                if (newPassword.length() < 8 || newPassword.matches("\\s+"))  {
                     displayErrorMessage("Password must be at least 8 characters long.");
                     return;
                 }

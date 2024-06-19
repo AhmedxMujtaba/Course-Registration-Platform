@@ -178,6 +178,11 @@ public class CourseEditUI extends JFrame {
                     return;
                 }
 
+                if (!isValidInput(courseName) || !isValidInput(description)) {
+                    displayErrorMessage("Name and description must have at least 2 characters and cannot contain invalid characters.");
+                    return;
+                }
+
                 course.setName(courseName);
                 course.setDescription(description);
                 course.setPrice(price);
@@ -191,7 +196,14 @@ public class CourseEditUI extends JFrame {
                     displayErrorMessage("There was an error updating the course. Please try again.");
                 }
             }
+
+            private boolean isValidInput(String input) {
+                // Ensure the input has at least 2 characters and only valid characters
+                String validCharsRegex = "^[a-zA-Z0-9 ,.!?'-]{2,}$";
+                return input.matches(validCharsRegex);
+            }
         });
+
 
         deleteButton.addActionListener(new ActionListener() {
             @Override
