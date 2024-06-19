@@ -17,13 +17,13 @@ public class InstructorDAO {
         Instructor instructor = null;
         try {
             dbLink.connect();
-            String query = "SELECT u.id, u.name, u.password, u.email, u.phoneNumber, i.income FROM users u JOIN instructors i ON u.id = i.userId WHERE u.id = ?";
+            String query = "SELECT u.id, u.name, u.password_hash, u.email, u.phoneNumber, i.income FROM users u JOIN instructors i ON u.id = i.userId WHERE u.id = ?";
             try (Connection connection = dbLink.getConnection();
                  PreparedStatement pstmt = connection.prepareStatement(query)) {
                 pstmt.setInt(1, userId);
                 ResultSet rs = pstmt.executeQuery();
                 if (rs.next()) {
-                    instructor = new Instructor(rs.getInt("id"), rs.getString("name"), rs.getString("password"),
+                    instructor = new Instructor(rs.getInt("id"), rs.getString("name"), rs.getString("password_hash"),
                             rs.getString("email"), rs.getInt("phoneNumber"), rs.getDouble("income"));
                     ArrayList<String> courseIds = getCoursesByInstructorId(userId);
                     for (String courseId : courseIds) {

@@ -5,6 +5,7 @@ import com.ahmedxmujtaba.DataBase.UserDAO;
 import com.ahmedxmujtaba.Entities.User;
 import com.ahmedxmujtaba.Entities.Instructor;
 import com.ahmedxmujtaba.Entities.Student;
+import com.ahmedxmujtaba.Security.PasswordHasher;
 
 import javax.swing.*;
 import java.awt.*;
@@ -157,19 +158,27 @@ public class LoginUI extends JFrame {
                 UserDAO userDAO = new UserDAO(dbLink);
                 User user = userDAO.getUserByEmail(email);
 
-                if (user != null && user.getPassword().equals(password)) {
-                    User fullUser = userDAO.getUserDetails(user);
-                    messageLabel.setText("Login successful!");
+                if (user != null) {
+                    // Hash the entered password for comparison
+                    String enteredPasswordHash = PasswordHasher.hashPassword(password);
 
-                    if (fullUser instanceof Instructor) {
-                        dispose();  // Close the login window
-                        new InstructorPortalUI((Instructor) fullUser).setVisible(true);
-                    } else if (fullUser instanceof Student) {
-                        dispose();
-                        new StudentUI((Student) fullUser).setVisible(true);
+                    // Compare hashed passwords
+                    if (user.getPasswordHash().equals(enteredPasswordHash)) {
+                        User fullUser = userDAO.getUserDetails(user);
+                        messageLabel.setText("Login successful!");
+
+                        if (fullUser instanceof Instructor) {
+                            dispose();  // Close the login window
+                            new InstructorPortalUI((Instructor) fullUser).setVisible(true);
+                        } else if (fullUser instanceof Student) {
+                            dispose();
+                            new StudentUI((Student) fullUser).setVisible(true);
+                        }
+                    } else {
+                        messageLabel.setText("Invalid email or password.");
                     }
                 } else {
-                    messageLabel.setText("Invalid email or password.");
+                    messageLabel.setText("User not found.");
                 }
                 dbLink.disconnect();
             }

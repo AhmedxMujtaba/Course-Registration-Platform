@@ -18,7 +18,7 @@ public class StudentDAO {
         // First, add the user to the Users table
         String query = "INSERT INTO Users (name, password, email, phoneNumber) VALUES ('"
                 + student.getName() + "', '"
-                + student.getPassword() + "', '"
+                + student.getPasswordHash() + "', '"
                 + student.getEmail() + "', "
                 + student.getPhoneNumber() + ")";
         dbLink.connect();

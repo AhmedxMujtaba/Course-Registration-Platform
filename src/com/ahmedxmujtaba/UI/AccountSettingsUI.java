@@ -10,7 +10,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.regex.Pattern;
 
 public class AccountSettingsUI extends JFrame {
     private JTextField nameField;
@@ -236,7 +235,7 @@ public class AccountSettingsUI extends JFrame {
 
                 // Update the user object with the new information
                 user.setName(newName);
-                user.setPassword(newPassword);
+                user.setPasswordHash(newPassword);
                 user.setPhoneNumber(Integer.parseInt(newPhoneNumber));
 
                 // Update the user information in the database
@@ -300,7 +299,7 @@ public class AccountSettingsUI extends JFrame {
         // Populate user data in the fields
         nameField.setText(user.getName());
         emailField.setText(user.getEmail());
-        passwordField.setText(user.getPassword());
+        passwordField.setText(user.getPasswordHash());
         phoneNumberField.setText(String.valueOf(user.getPhoneNumber()));
 
         setVisible(true);

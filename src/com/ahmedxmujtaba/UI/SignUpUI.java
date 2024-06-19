@@ -3,6 +3,7 @@ package com.ahmedxmujtaba.UI;
 import com.ahmedxmujtaba.DataBase.DataBaseLink;
 import com.ahmedxmujtaba.DataBase.UserDAO;
 import com.ahmedxmujtaba.Entities.User;
+import com.ahmedxmujtaba.Security.PasswordHasher;
 
 import javax.swing.*;
 import java.awt.*;
@@ -238,8 +239,9 @@ public class SignUpUI extends JFrame {
                     // Get selected user type from combo box
                     String userType = (String) userTypeComboBox.getSelectedItem();
 
-                    // Create new User object
-                    User newUser = new User(0, name, password, email, phoneNumber);
+                    // Create new User object with hashed password
+                    User newUser = new User(name, password, email, phoneNumber);
+
                     DataBaseLink dbLink = new DataBaseLink();
                     UserDAO userDAO = new UserDAO(dbLink);
 

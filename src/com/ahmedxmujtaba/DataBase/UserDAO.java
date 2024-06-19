@@ -4,6 +4,7 @@ import com.ahmedxmujtaba.Entities.Lecture;
 import com.ahmedxmujtaba.Entities.User;
 import com.ahmedxmujtaba.Entities.Instructor;
 import com.ahmedxmujtaba.Entities.Student;
+import com.ahmedxmujtaba.Security.PasswordHasher;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -18,172 +19,208 @@ public class UserDAO {
     }
 
     public int addUser(User user) {
-        String query = "INSERT INTO Users (name, password, email, phoneNumber) VALUES ('"
-                + user.getName() + "', '"
-                + user.getPassword() + "', '"
-                + user.getEmail() + "', "
-                + user.getPhoneNumber() + ")";
+        String hashedPassword = PasswordHasher.hashPassword(user.getPasswordHash());
+        String query = "INSERT INTO Users (name, password_hash, email, phoneNumber) VALUES (?, ?, ?, ?)";
         try {
-            return dbLink.executeUpdateAndGetGeneratedKeys(query);
-        } catch (Exception e) {
-            e.printStackTrace(); // Print stack trace for debugging
-            return -1; // Return -1 to indicate failure
+            dbLink.connect();
+            PreparedStatement pstmt = dbLink.getConnection().prepareStatement(query, PreparedStatement.RETURN_GENERATED_KEYS);
+            pstmt.setString(1, user.getName());
+            pstmt.setString(2, hashedPassword);
+            pstmt.setString(3, user.getEmail());
+            pstmt.setInt(4, user.getPhoneNumber());
+            int affectedRows = pstmt.executeUpdate();
+
+            if (affectedRows == 0) {
+                throw new SQLException("Creating user failed, no rows affected.");
+            }
+
+            ResultSet generatedKeys = pstmt.getGeneratedKeys();
+            if (generatedKeys.next()) {
+                return generatedKeys.getInt(1);
+            } else {
+                throw new SQLException("Creating user failed, no ID obtained.");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return -1;
+        } finally {
+            dbLink.disconnect();
         }
     }
 
     public boolean addStudent(User user) {
         if (emailExists(user.getEmail())) {
             System.out.println("Email already exists.");
-            return false; // Email already exists
+            return false;
         }
 
         try {
             int userId = addUser(user);
             if (userId == -1) {
-                return false; // Adding user failed
+                return false;
             }
             user.setId(userId);
-            String studentQuery = "INSERT INTO Students (userId) VALUES (" + userId + ")";
+            String studentQuery = "INSERT INTO Students (userId) VALUES (?)";
             dbLink.connect();
-            dbLink.executeUpdate(studentQuery);
+            PreparedStatement pstmt = dbLink.getConnection().prepareStatement(studentQuery);
+            pstmt.setInt(1, userId);
+            pstmt.executeUpdate();
             dbLink.disconnect();
-            return true; // Successfully added student
-        } catch (Exception e) {
-            e.printStackTrace(); // Print stack trace for debugging
-            return false; // Indicate failure
+            return true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
         }
     }
-
 
     public boolean addInstructor(User user) {
         if (emailExists(user.getEmail())) {
             System.out.println("Email already exists.");
-            return false; // Email already exists
+            return false;
         }
 
         try {
             int userId = addUser(user);
             if (userId == -1) {
-                return false; // Adding user failed
+                return false;
             }
             user.setId(userId);
-            String instructorQuery = "INSERT INTO Instructors (userId, income) VALUES (" + userId + ", 0)";
+            String instructorQuery = "INSERT INTO Instructors (userId, income) VALUES (?, 0)";
             dbLink.connect();
-            dbLink.executeUpdate(instructorQuery);
+            PreparedStatement pstmt = dbLink.getConnection().prepareStatement(instructorQuery);
+            pstmt.setInt(1, userId);
+            pstmt.executeUpdate();
             dbLink.disconnect();
-            return true; // Successfully added instructor
-        } catch (Exception e) {
-            e.printStackTrace(); // Print stack trace for debugging
-            return false; // Indicate failure
+            return true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
         }
     }
 
     public boolean emailExists(String email) {
-        String query = "SELECT COUNT(*) FROM Users WHERE email = '" + email + "'";
+        String query = "SELECT COUNT(*) FROM Users WHERE email = ?";
         try {
             dbLink.connect();
-            ResultSet rs = dbLink.executeQuery(query);
+            PreparedStatement pstmt = dbLink.getConnection().prepareStatement(query);
+            pstmt.setString(1, email);
+            ResultSet rs = pstmt.executeQuery();
             rs.next();
             int count = rs.getInt(1);
             dbLink.disconnect();
-            return count > 0; // If count is greater than 0, email exists
-        } catch (Exception e) {
+            return count > 0;
+        } catch (SQLException e) {
             e.printStackTrace();
             dbLink.disconnect();
-            return false; // In case of an error, treat it as email existing to avoid duplicates
+            return false;
         }
     }
 
     public User getUserByEmail(String email) {
-        String query = "SELECT * FROM Users WHERE email = '" + email + "'";
+        String query = "SELECT * FROM Users WHERE email = ?";
         dbLink.connect();
-        ResultSet rs = dbLink.executeQuery(query);
         User user = null;
         try {
+            PreparedStatement pstmt = dbLink.getConnection().prepareStatement(query);
+            pstmt.setString(1, email);
+            ResultSet rs = pstmt.executeQuery();
             if (rs.next()) {
                 user = new User(
                         rs.getInt("id"),
                         rs.getString("name"),
-                        rs.getString("password"),
+                        rs.getString("password_hash"),
                         rs.getString("email"),
                         rs.getInt("phoneNumber")
                 );
             }
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            dbLink.disconnect();
         }
-        dbLink.disconnect();
         return user;
     }
 
     public User getUserDetails(User user) {
         if (isInstructor(user.getId())) {
-            String query = "SELECT * FROM Instructors INNER JOIN Users ON Instructors.userId = Users.id WHERE Instructors.userId = " + user.getId();
+            String query = "SELECT * FROM Instructors INNER JOIN Users ON Instructors.userId = Users.id WHERE Instructors.userId = ?";
             dbLink.connect();
-            ResultSet rs = dbLink.executeQuery(query);
             try {
+                PreparedStatement pstmt = dbLink.getConnection().prepareStatement(query);
+                pstmt.setInt(1, user.getId());
+                ResultSet rs = pstmt.executeQuery();
                 if (rs.next()) {
                     return new Instructor(user.getId(),
                             rs.getString("name"),
-                            rs.getString("password"),
+                            rs.getString("password_hash"),
                             rs.getString("email"),
                             rs.getInt("phoneNumber"),
                             rs.getDouble("income"));
                 }
             } catch (SQLException e) {
                 e.printStackTrace();
+            } finally {
+                dbLink.disconnect();
             }
         } else if (isStudent(user.getId())) {
-            return new Student(user.getId(), user.getName(), user.getPassword(), user.getEmail(), user.getPhoneNumber());
+            return new Student(user.getId(), user.getName(), user.getPasswordHash(), user.getEmail(), user.getPhoneNumber());
         }
-        dbLink.disconnect();
         return user;
     }
 
-
     public boolean isInstructor(int userId) {
-        String query = "SELECT * FROM Instructors WHERE userId = " + userId;
+        String query = "SELECT * FROM Instructors WHERE userId = ?";
         dbLink.connect();
-        ResultSet rs = dbLink.executeQuery(query);
         boolean isInstructor = false;
         try {
+            PreparedStatement pstmt = dbLink.getConnection().prepareStatement(query);
+            pstmt.setInt(1, userId);
+            ResultSet rs = pstmt.executeQuery();
             isInstructor = rs.next();
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            dbLink.disconnect();
         }
-        dbLink.disconnect();
         return isInstructor;
     }
 
     public boolean isStudent(int userId) {
-        String query = "SELECT * FROM Students WHERE userId = " + userId;
+        String query = "SELECT * FROM Students WHERE userId = ?";
         dbLink.connect();
-        ResultSet rs = dbLink.executeQuery(query);
         boolean isStudent = false;
         try {
+            PreparedStatement pstmt = dbLink.getConnection().prepareStatement(query);
+            pstmt.setInt(1, userId);
+            ResultSet rs = pstmt.executeQuery();
             isStudent = rs.next();
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            dbLink.disconnect();
         }
-        dbLink.disconnect();
         return isStudent;
     }
 
     public int getUserIdByEmail(String email) {
-        String query = "SELECT id FROM Users WHERE email = '" + email + "'";
+        String query = "SELECT id FROM Users WHERE email = ?";
         dbLink.connect();
-        ResultSet rs = dbLink.executeQuery(query);
         int userId = -1;
         try {
+            PreparedStatement pstmt = dbLink.getConnection().prepareStatement(query);
+            pstmt.setString(1, email);
+            ResultSet rs = pstmt.executeQuery();
             if (rs.next()) {
                 userId = rs.getInt("id");
             }
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            dbLink.disconnect();
         }
-        dbLink.disconnect();
         return userId;
     }
+
     public boolean updateUserName(User user) {
         String query = "UPDATE Users SET name = ? WHERE id = ?";
         try {
@@ -201,11 +238,12 @@ public class UserDAO {
     }
 
     public boolean updateUserPassword(User user) {
-        String query = "UPDATE Users SET password = ? WHERE id = ?";
+        String hashedPassword = PasswordHasher.hashPassword(user.getPasswordHash());
+        String query = "UPDATE Users SET password_hash = ? WHERE id = ?";
         try {
             dbLink.connect();
             PreparedStatement pstmt = dbLink.getConnection().prepareStatement(query);
-            pstmt.setString(1, user.getPassword());
+            pstmt.setString(1, hashedPassword);
             pstmt.setInt(2, user.getId());
             int rowsAffected = pstmt.executeUpdate();
             dbLink.disconnect();
@@ -231,20 +269,18 @@ public class UserDAO {
             return false;
         }
     }
+
     public boolean deleteUser(User user) {
         try {
             LectureDAO lectureDAO = new LectureDAO(dbLink);
-            // Step 1: Get all lectures by the user
-            List<Lecture> lectures = lectureDAO.getLecturesByCourseId(user.getId()); // Assuming user is associated with courses
+            List<Lecture> lectures = lectureDAO.getLecturesByCourseId(user.getId());
             for (Lecture lecture : lectures) {
-                // Delete all notes and videos associated with each lecture
                 boolean notesDeleted = lectureDAO.deleteNotesByLectureId(lecture.getId());
                 boolean videosDeleted = lectureDAO.deleteVideosByLectureId(lecture.getId());
                 if (!notesDeleted || !videosDeleted) {
                     System.out.println("Failed to delete notes or videos for lecture ID: " + lecture.getId());
                     return false;
                 }
-                // Delete the lecture itself
                 boolean lectureDeleted = lectureDAO.deleteLectureById(lecture.getId());
                 if (!lectureDeleted) {
                     System.out.println("Failed to delete lecture ID: " + lecture.getId());
@@ -252,19 +288,16 @@ public class UserDAO {
                 }
             }
 
-            // Step 2: Delete the user
             String query = "DELETE FROM Users WHERE id = ?";
             dbLink.connect();
             PreparedStatement pstmt = dbLink.getConnection().prepareStatement(query);
             pstmt.setInt(1, user.getId());
             int rowsAffected = pstmt.executeUpdate();
             dbLink.disconnect();
-
             return rowsAffected > 0;
         } catch (SQLException e) {
             e.printStackTrace();
             return false;
         }
-
     }
 }

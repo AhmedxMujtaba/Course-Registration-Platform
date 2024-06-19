@@ -1,0 +1,2 @@
+2024-06-19 13:23:31 [ERROR] Unable to generate keys: class com.ahmedxmujtaba.DataBase.DataBaseLink
+2024-06-19 14:03:24 [ERROR] Unable to generate keys: class com.ahmedxmujtaba.DataBase.DataBaseLink
