@@ -1,9 +1,6 @@
 # Course Registration Platform
 
-<p align="center">
-  <img src="https://github.com/AhmedxMujtaba/Course-Registration-Platform/assets/121884030/4df24b71-fe7e-4918-8701-60bf33f17c2e" alt="config.properties">
-</p>
-
+ <img src="https://github.com/AhmedxMujtaba/Course-Registration-Platform/assets/121884030/4df24b71-fe7e-4918-8701-60bf33f17c2e" alt="config.properties">
 
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![Build Status](https://travis-ci.org/AhmedxMujtaba/Course-Registration-Platform.svg?branch=master)](https://travis-ci.org/AhmedxMujtaba/Course-Registration-Platform)
@@ -65,28 +62,28 @@ cd Course-Registration-Platform
 
 ### Login
 
-<img width="660" alt="image" src="https://github.com/AhmedxMujtaba/Course-Registration-Platform/assets/121884030/0f678aa1-62b2-47cb-8550-3b56abef6572">
+<img width="500" alt="image" src="https://github.com/AhmedxMujtaba/Course-Registration-Platform/assets/121884030/0f678aa1-62b2-47cb-8550-3b56abef6572">
 
 
 ### Sign Up
 
-<img width="658" alt="image" src="https://github.com/AhmedxMujtaba/Course-Registration-Platform/assets/121884030/123f823c-2018-4ce6-a721-2b3726adb6e6">
+<img width="500" alt="image" src="https://github.com/AhmedxMujtaba/Course-Registration-Platform/assets/121884030/123f823c-2018-4ce6-a721-2b3726adb6e6">
 
 ### Instructor Home Page
 
-<img width="659" alt="image" src="https://github.com/AhmedxMujtaba/Course-Registration-Platform/assets/121884030/f67a9946-65fe-4358-89be-0ab33d44e231">
+<img width="500" alt="image" src="https://github.com/AhmedxMujtaba/Course-Registration-Platform/assets/121884030/f67a9946-65fe-4358-89be-0ab33d44e231">
 
 ### Course Creation 
 
-<img width="658" alt="image" src="https://github.com/AhmedxMujtaba/Course-Registration-Platform/assets/121884030/4c727b4f-acaf-4d02-966a-6ce6c6a9f232">
+<img width="500" alt="image" src="https://github.com/AhmedxMujtaba/Course-Registration-Platform/assets/121884030/4c727b4f-acaf-4d02-966a-6ce6c6a9f232">
 
 ### Lecture Creation
 
-<img width="658" alt="image" src="https://github.com/AhmedxMujtaba/Course-Registration-Platform/assets/121884030/fb25f265-fe08-452e-b112-e9364b986c97">
-
-### Register Course
+<img width="500" alt="image" src="https://github.com/AhmedxMujtaba/Course-Registration-Platform/assets/121884030/fb25f265-fe08-452e-b112-e9364b986c97">
 
 ## Contributing
+
+
 
 ## License
 
