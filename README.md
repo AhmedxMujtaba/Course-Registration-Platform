@@ -2,10 +2,6 @@
 
  <img src="https://github.com/AhmedxMujtaba/Course-Registration-Platform/assets/121884030/4df24b71-fe7e-4918-8701-60bf33f17c2e" alt="config.properties">
 
-[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
-[![Build Status](https://travis-ci.org/AhmedxMujtaba/Course-Registration-Platform.svg?branch=master)](https://travis-ci.org/AhmedxMujtaba/Course-Registration-Platform)
-[![Coverage Status](https://coveralls.io/repos/github/yourusername/projectname/badge.svg?branch=master)](https://coveralls.io/github/yourusername/projectname?branch=master)
-
 ## Table of Contents
 - [Introduction](#introduction)
 - [Features](#features)
